@@ -12,6 +12,10 @@ namespace TlgImitation
 {
     class Program
     {
+        /*
+         * Данный класс позволяет имитировать работу бота без реализованного чат клиента Telegram.
+         * С помощью методов можно тестировать работоспособность основных модулей.
+         */
         private static IDataBase<IDataBaseElement> dataBase;
         private static BotLogic telegramLogic;
 
