@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using App.BotTask;
 using Domain;
 using Infrastructure;
 
-namespace App.BotTask
+namespace App.UserRequest
 {
     public class AddUser : IUserRequest
     {

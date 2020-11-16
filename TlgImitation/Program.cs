@@ -4,6 +4,7 @@ using Domain;
 using App;
 using App.BotTask;
 using App.PublicParserAPI;
+using App.UserRequest;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
