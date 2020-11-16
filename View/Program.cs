@@ -4,9 +4,9 @@ namespace View
 {
     class Program
     {
+        //For init commit
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
         }
     }
 }
