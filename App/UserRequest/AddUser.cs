@@ -20,7 +20,7 @@ namespace App.UserRequest
         {
             return delegate
             {
-                var user = new User {Id = userId, Token = parameters["api_token"]};
+                var user = new User {Id = userId, PublicParserToken = parameters["api_token"]};
                 dataBase.Add(user);
             };
         }
