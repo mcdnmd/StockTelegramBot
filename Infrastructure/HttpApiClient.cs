@@ -7,17 +7,17 @@ namespace Infrastructure
     public class HttpApiClient
     {
         private readonly HttpClient client;
-        private readonly string URL;
+        private readonly string url;
 
         public HttpApiClient(string token)
         {
             client = new HttpClient();
-            URL = $"https://cloud.iexapis.com/stable/stock/intc/quote/?token={token}";
+            url = $"https://cloud.iexapis.com/stable/stock/intc/quote/?token={token}";
         }
 
-        public async Task<string> GET()
+        private async Task<string> Get()
         {
-            var response = await client.GetAsync(URL);
+            var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -26,7 +26,7 @@ namespace Infrastructure
         {
             try
             {
-                return GET().Result;
+                return Get().Result;
             }
             catch (AggregateException e)
             {
