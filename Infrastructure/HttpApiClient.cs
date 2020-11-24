@@ -7,17 +7,17 @@ namespace Infrastructure
     public class HttpApiClient
     {
         private readonly HttpClient client;
-        private readonly string url;
+        private readonly string URL;
 
         public HttpApiClient(string token)
         {
             client = new HttpClient();
-            url = $"https://cloud.iexapis.com/stable/stock/intc/quote/?token={token}";
+            URL = $"https://cloud.iexapis.com/stable/stock/intc/quote/?token={token}";
         }
 
         private async Task<string> Get()
         {
-            var response = await client.GetAsync(url);
+            var response = await client.GetAsync(URL);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
