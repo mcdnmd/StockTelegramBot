@@ -8,21 +8,21 @@ namespace App.UserRequest
 {
     public class AddUser : IUserRequest
     {
-        public Action Task { get; }
+        private readonly string userId;
+        private readonly Dictionary<string, string> parameters;
+        private readonly IDataBase<IDataBaseElement> dataBase;
 
         public AddUser(string userId, Dictionary<string, string> parameters, IDataBase<IDataBaseElement> dataBase)
         {
-            Task = CreateTask(userId, parameters, dataBase);
+            this.userId = userId;
+            this.parameters = parameters;
+            this.dataBase = dataBase;
         }
-
-        private static Action CreateTask(string userId, Dictionary<string, string> parameters,
-            IDataBase<IDataBaseElement> dataBase)
+        
+        public void Task()
         {
-            return delegate
-            {
-                var user = new User {Id = userId, Token = parameters["api_token"]};
-                dataBase.Add(user);
-            };
+            var user = new User {Id = userId, PublicParserToken = parameters["api_token"]};
+            dataBase.Add(user);
         }
     }
 }

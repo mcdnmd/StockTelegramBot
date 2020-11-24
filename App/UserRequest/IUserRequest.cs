@@ -4,6 +4,6 @@ namespace App.BotTask
 {
     public interface IUserRequest
     {
-        Action Task { get; }
+        void Task();
     }
 }
