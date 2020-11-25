@@ -20,6 +20,13 @@ namespace View
         {
             botClient.OnMessage += BotOnMessage;
             botClient.StartReceiving();
+            
+            // Debug mode START
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
+            // Debug mode END
+            
+            botClient.StopReceiving();
         }
 
         private async void BotOnMessage(object sender, MessageEventArgs e)
