@@ -1,12 +1,13 @@
 namespace App.BotTask
 {
-    public enum UserRequestTaskType
+    public enum UserRequestType
     {
-        AddUser,
-        RemoveUser,
-        InsertUserInfo,
+        Register,
+        UnRegister,
+        UpdateUserInfo,
         SubscribeForSymbol,
         UnSubscribeForSymbol,
         UpdateUserInterfaceInfo,
+        InputRawData
     }
 }
