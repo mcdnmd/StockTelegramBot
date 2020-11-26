@@ -21,7 +21,7 @@ namespace App.UserRequest
         
         public void Task()
         {
-            var user = new User {Id = userId, PublicParserToken = parameters["api_token"]};
+            var user = new UserDto {Id = userId, PublicParserToken = parameters["api_token"]};
             dataBase.Add(user);
         }
     }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace Domain
+namespace Infrastructure
 {
-    public class User : IDataBaseElement
+    public class UserDto
     {
         public string Id;
         public ChatStatus ChatStatus;
