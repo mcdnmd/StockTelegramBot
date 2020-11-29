@@ -1,12 +1,16 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace Infrastructure
 {
-    public interface IDataBase<T>
+    public interface IDataBase
     {
-        void Add(T obj);
-        void Remove(T obj);
+        public Task<UserDto> FindUser(long id);
 
-        void Select(string key);
+        public Task<UserDto> AddNewUser(UserDto userDto);
 
-        void Insert(T obj);
+        public Task<UserDto> UpdateUser(UserDto userDto);
+
+        public Task<UserDto> RemoveUser(UserDto userDto);
     }
 }

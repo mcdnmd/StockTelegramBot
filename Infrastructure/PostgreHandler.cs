@@ -1,44 +1,36 @@
 using System;
+using System.Net;
+using System.Threading.Tasks;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
 {
-    public class ApplicationContext : DbContext
+    public class PostgreHandler : IDataBase
     {
-        public DbSet<User> Users { get; set; }
+        private readonly PostgresqlDbContext _dbContext =
+            new PostgresqlDbFactory().CreateDbContext(null);
+        public async Task<UserDto> FindUser(long id) => await _dbContext.FindAsync<UserDto>(id);
 
-        public ApplicationContext()
+        public async Task<UserDto> AddNewUser(UserDto userDto)
         {
-            Database.EnsureCreated();
+            await _dbContext.AddAsync(userDto);
+            await _dbContext.SaveChangesAsync();
+            return userDto;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public async Task<UserDto> UpdateUser(UserDto userDto)
         {
-            optionsBuilder.UseNpgsql("");
-        }
-    }
-
-    public class PostgreHandler<T> : IDataBase<T>
-    {
-        public void Add(T obj)
-        {
-            throw new NotImplementedException();
+            _dbContext.Update(userDto);
+            await _dbContext.SaveChangesAsync();
+            return userDto;
         }
 
-        public void Remove(T obj)
+        public async Task<UserDto> RemoveUser(UserDto userDto)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Select(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Insert(T obj)
-        {
-            throw new NotImplementedException();
+            _dbContext.Remove(userDto);
+            await _dbContext.SaveChangesAsync();
+            return userDto;
         }
     }
 }
