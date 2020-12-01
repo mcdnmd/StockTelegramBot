@@ -1,5 +1,6 @@
 ﻿using System;
 using App;
+using Infrastructure;
 using Telegram.Bot;
 using View;
 
@@ -30,6 +31,7 @@ namespace StockTlgBot
         private static void AddAllEventHandlers()
         {
             telegramHandler.OnMessage += botLogic.ExecuteUserRequest;
+            botLogic.OnReply += telegramHandler.BotOnReply;
         }
     }
 }
