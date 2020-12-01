@@ -49,19 +49,16 @@ namespace App
         private void ParseInputData(UserRequest request)
         {
             var user = userDB.FindUser(request.UserID).Result;
-            switch (user.ChatStatus)
+            var botReply = new BotReply(long.Parse(user.Id), BotReplyType.UnknownCommand, null) ;
+            botReply.ReplyType = user.ChatStatus switch
             {
-                case ChatStatus.ChoseParser:
-                    break;
-                case ChatStatus.EnterParserPublicToken:
-                    break;
-                case ChatStatus.EnterSymbolToAddNewSubscription:
-                    break;
-                case ChatStatus.EnterSymbolToRemoveSubscription:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                ChatStatus.ChoseParser => BotReplyType.RequestForChoseParser,
+                ChatStatus.EnterParserPublicToken => BotReplyType.RequestForEnterParserPublicToken,
+                ChatStatus.EnterSymbolToAddNewSubscription => BotReplyType.RequestForEnterSymbol,
+                ChatStatus.EnterSymbolToRemoveSubscription => BotReplyType.RequestForEnterSymbol,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            OnReply(botReply);
         }
 
         private void RegisterNewUser(UserRequest request)
