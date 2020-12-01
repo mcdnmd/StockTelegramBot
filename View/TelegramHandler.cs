@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using App.BotReply;
-using App.BotTask;
+using App;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
@@ -31,7 +30,7 @@ namespace View
             botClient.StopReceiving();
         }
 
-        private async void BotOnMessage(object sender, MessageEventArgs e)
+        private void BotOnMessage(object sender, MessageEventArgs e)
         {
             var userId = e.Message.Chat.Id;
             UserRequestType userRequestType ;
@@ -56,8 +55,8 @@ namespace View
                 default:
                     if (e.Message.Text.StartsWith('/'))
                     {
-                        var parameters1 = new Dictionary<string, string> {["text"] = $"Unknown command:{e.Message.Text}"};
-                        SendReply(new BotReply(e.Message.Chat.Id, BotReplyType.UnknownCommand, parameters1));
+                        var parameters1 = new Dictionary<string, string> {["text"] = $"Unknown command: {e.Message.Text}"};
+                        BotOnReply(new BotReply(e.Message.Chat.Id, BotReplyType.UnknownCommand, parameters1));
                         return;
                     }
                     else
@@ -67,6 +66,36 @@ namespace View
             OnMessage(new UserRequest(userId, userRequestType));
         }
 
+        public void BotOnReply(BotReply botReply)
+        {
+            Dictionary<string, string> parameters;
+            switch (botReply.ReplyType)
+            {
+                case BotReplyType.UnknownCommand:
+                    parameters = null;
+                    break;
+                case BotReplyType.RequestForChoseParser:
+                    parameters = new Dictionary<string, string> {["text"] = $"Chose parser"};
+                    botReply.Parameters = parameters;
+                    break;
+                case BotReplyType.RequestForEnterParserPublicToken:
+                    parameters = new Dictionary<string, string> {["text"] = $"Register on their website and enter your public token"};
+                    botReply.Parameters = parameters;
+                    break;
+                case BotReplyType.RequestForEnterSymbol:
+                    parameters = new Dictionary<string, string> {["text"] = $"Enter your symbol"};
+                    botReply.Parameters = parameters;
+                    break;
+                case BotReplyType.SingleSymbolInfo:
+                    break;
+                case BotReplyType.MultipleSymbolInfo:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            SendReply(botReply);
+        }
+        
         private async void SendReply(BotReply botReply)
         {
             if (botReply.Parameters.ContainsKey("text"))
