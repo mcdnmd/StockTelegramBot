@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace App.BotReply
+namespace App
 {
     public class BotReply
     {

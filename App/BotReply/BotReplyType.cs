@@ -1,4 +1,4 @@
-namespace App.BotReply
+namespace App
 {
     public enum BotReplyType
     {

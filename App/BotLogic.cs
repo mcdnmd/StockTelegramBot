@@ -1,17 +1,27 @@
 using System;
-using App.BotTask;
 using Infrastructure;
 
 namespace App
 {
     public class BotLogic
     {
+        private IDataBase userDB;
+        private IDataBase stockDB;
+
+        public Action<BotReply> OnReply;
+
+        public BotLogic(IDataBase userDb, IDataBase stockDb)
+        {
+            userDB = userDb;
+            stockDB = stockDb;
+        }
+        
         public void ExecuteUserRequest(UserRequest request)
         {
             switch (request.RequestType)
             {
                 case UserRequestType.Register:
-                    //Register user in User DataBase
+                    RegisterNewUser(request);
                     break;
                 case UserRequestType.UnRegister:
                     // Delete all info about user in User DataBase
@@ -20,20 +30,70 @@ namespace App
                     // Change current user status for 'ChoseOptionForUpdateUserInfo'
                     break;
                 case UserRequestType.SubscribeForSymbol:
-                    // Change current user status for 'EnterNewSubscription'
+                    AddNewSymbolSubscription(request);
                     break;
                 case UserRequestType.UnSubscribeForSymbol:
-                    // Change current user status for 'EnterDeleteSubscriptions'
+                    RemoveSymbolSubscription(request);
                     break;
                 case UserRequestType.UpdateUserInterfaceInfo:
                     // Send for user ALL info about his subscriptions
                     break;
                 case UserRequestType.InputRawData:
-                    // Check current user status and then parse input string
+                    ParseInputData(request);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }    
+        }
+
+        private void ParseInputData(UserRequest request)
+        {
+            var user = userDB.FindUser(request.UserID).Result;
+            switch (user.ChatStatus)
+            {
+                case ChatStatus.ChoseParser:
+                    break;
+                case ChatStatus.EnterParserPublicToken:
+                    break;
+                case ChatStatus.EnterSymbolToAddNewSubscription:
+                    break;
+                case ChatStatus.EnterSymbolToRemoveSubscription:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void RegisterNewUser(UserRequest request)
+        {
+            var id = request.UserID;
+            var user = new UserDto
+            {
+                Id = id.ToString(),
+                ChatStatus =  ChatStatus.ChoseParser
+            };
+            userDB.AddNewUser(user);
+        }
+
+        private void AddNewSymbolSubscription(UserRequest request)
+        {
+            var id = request.UserID;
+            var user = userDB.FindUser(id).Result;
+            
+            /*
+             * Почему FindUser возвращает Task<UserDto> ?!?!
+             */
+            
+            user.ChatStatus = ChatStatus.EnterSymbolToAddNewSubscription;
+            userDB.UpdateUser(user);
+        }
+
+        private void RemoveSymbolSubscription(UserRequest request)
+        {
+            var id = request.UserID;
+            var user = userDB.FindUser(id).Result;
+            user.ChatStatus = ChatStatus.EnterSymbolToRemoveSubscription;
+            userDB.UpdateUser(user);
         }
     }
 }

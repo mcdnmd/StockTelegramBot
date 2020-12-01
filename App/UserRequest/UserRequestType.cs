@@ -1,4 +1,4 @@
-namespace App.BotTask
+namespace App
 {
     public enum UserRequestType
     {
