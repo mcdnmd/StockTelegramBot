@@ -1,10 +1,7 @@
-using System;
-using System.Net;
 using System.Threading.Tasks;
-using Domain;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure;
 
-namespace Infrastructure
+namespace TlgImitation.DbImitation
 {
     public class PostgreHandler : IDataBase
     {
