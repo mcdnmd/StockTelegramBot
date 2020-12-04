@@ -27,7 +27,7 @@ namespace App
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            return new BotReply(userRequest.User, type);
+            return new BotReply(userRequest.User, type, null);
         }
 
         private BotReplyType EnterSymbolToRemove(IDataBase database, UserRecord userRecord, List<string> symbols)

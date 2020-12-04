@@ -8,7 +8,7 @@ namespace App
         {
             var userRecord = new UserRecord{Id = user.Id, ChatStatus = ChatStatus.ChoseParser};
             database.AddNewUser(userRecord);
-            return new BotReply(user, BotReplyType.RequestForChoseParser);
+            return new BotReply(user, BotReplyType.RequestForChoseParser, null);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace App
             var userRecord = database.FindUser(long.Parse(user.Id)).Result;
             userRecord.ChatStatus = chatStatus;
             database.UpdateUser(userRecord);  
-            return new BotReply(user, GetReplyType(chatStatus));
+            return new BotReply(user, GetReplyType(chatStatus), null);
         }
 
         private BotReplyType GetReplyType(ChatStatus chatStatus)
