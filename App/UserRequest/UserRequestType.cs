@@ -2,6 +2,7 @@ namespace App
 {
     public enum UserRequestType
     {
+        Start,
         Register,
         UnRegister,
         UpdateUserInfo,
