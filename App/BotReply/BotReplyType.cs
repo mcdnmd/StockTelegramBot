@@ -8,5 +8,9 @@ namespace App
         RequestForEnterSymbol,
         SingleSymbolInfo,
         MultipleSymbolInfo,
+        SuccessfullyRemoveSymbol,
+        SuccessfullyAddSymbol,
+        SuccessfullyEnterToken,
+        UnknownParser
     }
 }
