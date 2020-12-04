@@ -1,8 +1,7 @@
-﻿using System.IO;
+﻿using Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
-namespace Infrastructure
+namespace TlgImitation.DbImitation
 {
     public class PostgresqlDbContext : DbContext
     {
