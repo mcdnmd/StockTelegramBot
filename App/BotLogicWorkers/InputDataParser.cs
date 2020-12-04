@@ -8,7 +8,7 @@ namespace App
     {
         public BotReply ParseData(IDataBase database, UserRequest userRequest)
         {
-            var userRecord = database.FindUser(long.Parse(userRequest.User.Id)).Result;
+            var userRecord = database.FindUser(userRequest.User.Id).Result;
             BotReplyType type;
             switch (userRecord.ChatStatus)
             {

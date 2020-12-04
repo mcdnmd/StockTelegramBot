@@ -7,7 +7,7 @@ namespace App
     {
         public void AddNewSubscription(IDataBase dataBase, IUser user, List<string> symbols)
         {
-            var userRecord = dataBase.FindUser(long.Parse(user.Id)).Result;
+            var userRecord = dataBase.FindUser(user.Id).Result;
             foreach (var symbol in symbols)
                 userRecord.Subscriptons.Add(symbol);
             userRecord.ChatStatus = ChatStatus.None; 
@@ -16,7 +16,7 @@ namespace App
 
         public void RemoveSubscription(IDataBase dataBase, IUser user, List<string> symbols)
         {
-            var userRecord = dataBase.FindUser(long.Parse(user.Id)).Result;
+            var userRecord = dataBase.FindUser(user.Id).Result;
             foreach (var symbol in symbols)
                 userRecord.Subscriptons.Remove(symbol);
             userRecord.ChatStatus = ChatStatus.None;
