@@ -6,14 +6,12 @@ namespace App
     public class BotLogic
     {
         private IDataBase userDB;
-        private IDataBase stockDB;
 
         public Action<BotReply> OnReply;
 
-        public BotLogic(IDataBase userDb, IDataBase stockDb)
+        public BotLogic(IDataBase userDb)
         {
             userDB = userDb;
-            stockDB = stockDb;
         }
         
         public void ExecuteUserRequest(UserRequest request)
