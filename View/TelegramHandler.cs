@@ -32,17 +32,16 @@ namespace View
 
         private void BotOnMessage(object sender, MessageEventArgs e)
         {
-            var userId = e.Message.Chat.Id;
-            UserRequestType userRequestType ;
+            var user = new TelegramUser(e.Message.Chat.Id);
+            UserRequestType userRequestType;
+            Dictionary<string, List<string>> parameters = default;
             switch (e.Message.Text)
             {
                 case null:
                     return;
                 case "/start":
-                    var parameters = new Dictionary<string, string>();
-                    parameters["text"] = "Hi, bro. Let`s start make money";
-                    SendReply(new BotReply(e.Message.Chat.Id, BotReplyType.UnknownCommand, parameters));
-                    return;
+                    userRequestType = UserRequestType.Start;
+                    break;
                 case "/register":
                     userRequestType = UserRequestType.Register;
                     break;
@@ -55,36 +54,52 @@ namespace View
                 default:
                     if (e.Message.Text.StartsWith('/'))
                     {
-                        var parameters1 = new Dictionary<string, string> {["text"] = $"Unknown command: {e.Message.Text}"};
-                        BotOnReply(new BotReply(e.Message.Chat.Id, BotReplyType.UnknownCommand, parameters1));
+                        HandleUnknownCommand(user, e.Message.Text);
                         return;
                     }
                     else
+                    {
                         userRequestType = UserRequestType.InputRawData;
+                        parameters = ParseInputData(e.Message.Text);
+                    }
                     break;
             }
-            OnMessage(new UserRequest(userId, userRequestType));
+            OnMessage(new UserRequest(user, userRequestType, parameters));
+        }
+
+        private void HandleUnknownCommand(TelegramUser user, string input)
+        {
+            var reply = new BotReply(user, BotReplyType.UnknownCommand, null);
+            var text = $"Unknown command {input}";
+            SendReply(reply, text);
+        }
+
+        private Dictionary<string, List<string>> ParseInputData(string messageText)
+        {
+            var result = new Dictionary<string, List<string>>();
+            result["data"] = new List<string>();
+            var words = messageText.Split();
+            foreach (var word in words)
+                result["data"].Add(word);
+            return result;
         }
 
         public void BotOnReply(BotReply botReply)
         {
-            Dictionary<string, string> parameters;
+            string text = "";
             switch (botReply.ReplyType)
             {
-                case BotReplyType.UnknownCommand:
-                    parameters = null;
+                case BotReplyType.Start:
+                    text = "Hi, I`m a stock parser!";
                     break;
                 case BotReplyType.RequestForChoseParser:
-                    parameters = new Dictionary<string, string> {["text"] = $"Chose parser"};
-                    botReply.Parameters = parameters;
+                    text = $"Enter parser";
                     break;
                 case BotReplyType.RequestForEnterParserPublicToken:
-                    parameters = new Dictionary<string, string> {["text"] = $"Register on their website and enter your public token"};
-                    botReply.Parameters = parameters;
+                    text = "Enter your public token";
                     break;
                 case BotReplyType.RequestForEnterSymbol:
-                    parameters = new Dictionary<string, string> {["text"] = $"Enter your symbol"};
-                    botReply.Parameters = parameters;
+                    text = "Enter symbol";
                     break;
                 case BotReplyType.SingleSymbolInfo:
                     break;
@@ -93,16 +108,22 @@ namespace View
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            SendReply(botReply);
+            SendReply(botReply, text);
         }
         
-        private async void SendReply(BotReply botReply)
+        private async void SendReply(BotReply botReply, string text)
         {
             if (botReply.Parameters.ContainsKey("text"))
             {
                 await botClient.SendTextMessageAsync(
-                    chatId: botReply.UserId, 
+                    chatId: botReply.User.Id, 
                     text: botReply.Parameters["text"]);
+            }
+            else
+            {
+                await botClient.SendTextMessageAsync(
+                    chatId: botReply.User.Id, 
+                    text: text);
             }
         }
     }
