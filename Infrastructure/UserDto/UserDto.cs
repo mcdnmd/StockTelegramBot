@@ -7,15 +7,7 @@ namespace Infrastructure
         public string Id;
         public ChatStatus ChatStatus;
         public List<string> Subscriptons;
-        public ParserNames ParserName;
+        public ParserName ParserName;
         public string ParserToken;
-    }
-
-    public enum ChatStatus
-    {
-    }
-
-    public enum ParserNames
-    {
     }
 }
