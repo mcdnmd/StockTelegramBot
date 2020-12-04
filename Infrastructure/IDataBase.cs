@@ -5,12 +5,12 @@ namespace Infrastructure
 {
     public interface IDataBase
     {
-        public Task<UserDto> FindUser(long id);
+        public Task<UserRecord> FindUser(long id);
 
-        public Task<UserDto> AddNewUser(UserDto userDto);
+        public Task<UserRecord> AddNewUser(UserRecord userRecord);
 
-        public Task<UserDto> UpdateUser(UserDto userDto);
+        public Task<UserRecord> UpdateUser(UserRecord userRecord);
 
-        public Task<UserDto> RemoveUser(UserDto userDto);
+        public Task<UserRecord> RemoveUser(UserRecord userRecord);
     }
 }

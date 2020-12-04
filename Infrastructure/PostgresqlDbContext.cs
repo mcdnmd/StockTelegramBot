@@ -14,7 +14,7 @@ namespace Infrastructure
 
         private string CurrentConnectionName { get; }
 
-        public DbSet<UserDto> Users { get; set; }
+        public DbSet<UserRecord> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

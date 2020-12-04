@@ -10,27 +10,27 @@ namespace Infrastructure
     {
         private readonly PostgresqlDbContext _dbContext =
             new PostgresqlDbFactory().CreateDbContext(null);
-        public async Task<UserDto> FindUser(long id) => await _dbContext.FindAsync<UserDto>(id);
+        public async Task<UserRecord> FindUser(long id) => await _dbContext.FindAsync<UserRecord>(id);
 
-        public async Task<UserDto> AddNewUser(UserDto userDto)
+        public async Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
-            await _dbContext.AddAsync(userDto);
+            await _dbContext.AddAsync(userRecord);
             await _dbContext.SaveChangesAsync();
-            return userDto;
+            return userRecord;
         }
 
-        public async Task<UserDto> UpdateUser(UserDto userDto)
+        public async Task<UserRecord> UpdateUser(UserRecord userRecord)
         {
-            _dbContext.Update(userDto);
+            _dbContext.Update(userRecord);
             await _dbContext.SaveChangesAsync();
-            return userDto;
+            return userRecord;
         }
 
-        public async Task<UserDto> RemoveUser(UserDto userDto)
+        public async Task<UserRecord> RemoveUser(UserRecord userRecord)
         {
-            _dbContext.Remove(userDto);
+            _dbContext.Remove(userRecord);
             await _dbContext.SaveChangesAsync();
-            return userDto;
+            return userRecord;
         }
     }
 }

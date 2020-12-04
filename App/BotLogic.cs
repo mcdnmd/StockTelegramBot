@@ -16,79 +16,28 @@ namespace App
         
         public void ExecuteUserRequest(UserRequest request)
         {
+            BotReply reply;
             switch (request.RequestType)
             {
+                case UserRequestType.Start:
+                    reply = new BotReply(request.User, BotReplyType.Start, null);
+                    break;
                 case UserRequestType.Register:
-                    RegisterNewUser(request);
-                    break;
-                case UserRequestType.UnRegister:
-                    // Delete all info about user in User DataBase
-                    break;
-                case UserRequestType.UpdateUserInfo:
-                    // Change current user status for 'ChoseOptionForUpdateUserInfo'
+                    reply = new UserRegister().Register(userDB, request.User);
                     break;
                 case UserRequestType.SubscribeForSymbol:
-                    AddNewSymbolSubscription(request);
+                    reply = new ChatStatusManager().ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToAddNewSubscription);
                     break;
                 case UserRequestType.UnSubscribeForSymbol:
-                    RemoveSymbolSubscription(request);
-                    break;
-                case UserRequestType.UpdateUserInterfaceInfo:
-                    // Send for user ALL info about his subscriptions
+                    reply = new ChatStatusManager().ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToRemoveSubscription);
                     break;
                 case UserRequestType.InputRawData:
-                    ParseInputData(request);
+                    reply = new InputDataParser().ParseData(userDB, request);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }    
-        }
-
-        private void ParseInputData(UserRequest request)
-        {
-            var user = userDB.FindUser(request.UserID).Result;
-            var botReply = new BotReply(long.Parse(user.Id), BotReplyType.UnknownCommand, null) ;
-            botReply.ReplyType = user.ChatStatus switch
-            {
-                ChatStatus.ChoseParser => BotReplyType.RequestForChoseParser,
-                ChatStatus.EnterParserPublicToken => BotReplyType.RequestForEnterParserPublicToken,
-                ChatStatus.EnterSymbolToAddNewSubscription => BotReplyType.RequestForEnterSymbol,
-                ChatStatus.EnterSymbolToRemoveSubscription => BotReplyType.RequestForEnterSymbol,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-            OnReply(botReply);
-        }
-
-        private void RegisterNewUser(UserRequest request)
-        {
-            var id = request.UserID;
-            var user = new UserDto
-            {
-                Id = id.ToString(),
-                ChatStatus =  ChatStatus.ChoseParser
-            };
-            userDB.AddNewUser(user);
-        }
-
-        private void AddNewSymbolSubscription(UserRequest request)
-        {
-            var id = request.UserID;
-            var user = userDB.FindUser(id).Result;
-            
-            /*
-             * Почему FindUser возвращает Task<UserDto> ?!?!
-             */
-            
-            user.ChatStatus = ChatStatus.EnterSymbolToAddNewSubscription;
-            userDB.UpdateUser(user);
-        }
-
-        private void RemoveSymbolSubscription(UserRequest request)
-        {
-            var id = request.UserID;
-            var user = userDB.FindUser(id).Result;
-            user.ChatStatus = ChatStatus.EnterSymbolToRemoveSubscription;
-            userDB.UpdateUser(user);
+            OnReply(reply);
         }
     }
 }
