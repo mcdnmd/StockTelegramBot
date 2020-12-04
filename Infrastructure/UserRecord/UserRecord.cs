@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Infrastructure
 {
-    public class UserDto
+    public class UserRecord
     {
         public string Id;
         public ChatStatus ChatStatus;
