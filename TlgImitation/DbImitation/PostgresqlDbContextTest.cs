@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TlgImitation.DbImitation
 {
-    public class PostgresqlDbContext : DbContext
+    public class PostgresqlDbContextTest : DbContext
     {
         public DbSet<UserRecord> UserRecords { get; set; }
 
@@ -11,9 +11,9 @@ namespace TlgImitation.DbImitation
         {
             var connectionStr = "Host=ec2-54-246-87-132.eu-west-1.compute.amazonaws.com;" +
                                 "Port=5432;" +
-                                "Database=d5ceu5kcjnqaf8;" +
-                                "Username=rntavfhtxconyj;" +
-                                "Password=24e77ae837de198e01c45b9ef6fb451a4cd205a957596140bcddbe6e08893aaf;" +
+                                "Database=d9cpseuak8n0d6;" +
+                                "Username=ivzlrgkviovnbq;" +
+                                "Password=176adf81b9734b44fe603b5873e1fb23b224dedb893dd9a60a7f4536e2cf2c8f;" +
                                 "SSL Mode=Require; " +
                                 "Trust Server Certificate=true;";
             optionsBuilder.UseNpgsql(connectionStr);
