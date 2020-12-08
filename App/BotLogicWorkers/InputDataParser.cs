@@ -8,7 +8,7 @@ namespace App
     {
         public BotReply ParseData(IDataBase database, UserRequest userRequest)
         {
-            var userRecord = database.FindUser(long.Parse(userRequest.User.Id)).Result;
+            var userRecord = database.FindUser(userRequest.User.Id).Result;
             BotReplyType type;
             switch (userRecord.ChatStatus)
             {
@@ -52,6 +52,7 @@ namespace App
         {
             userRecord.ParserToken = publicToken[0];
             database.UpdateUser(userRecord);
+            userRecord.ChatStatus = ChatStatus.None;
             return BotReplyType.SuccessfullyEnterToken;
         }
 
@@ -71,6 +72,7 @@ namespace App
                     botReplyType = BotReplyType.UnknownParser;
                     break;
             }
+            userRecord.ChatStatus = ChatStatus.EnterParserPublicToken;
             database.UpdateUser(userRecord);
             return botReplyType;
         }

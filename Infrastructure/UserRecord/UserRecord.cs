@@ -4,7 +4,7 @@ namespace Infrastructure
 {
     public class UserRecord
     {
-        public string Id;
+        public long Id;
         public ChatStatus ChatStatus;
         public List<string> Subscriptons;
         public ParserName ParserName;

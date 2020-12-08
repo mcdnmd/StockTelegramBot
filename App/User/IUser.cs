@@ -2,6 +2,6 @@ namespace App
 {
     public interface IUser
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
     }
 }

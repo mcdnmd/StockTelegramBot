@@ -8,7 +8,7 @@ namespace App
     {
         public BotReply ChangeCurrentChatStatus(IDataBase database, IUser user, ChatStatus chatStatus)
         {
-            var userRecord = database.FindUser(long.Parse(user.Id)).Result;
+            var userRecord = database.FindUser(user.Id).Result;
             userRecord.ChatStatus = chatStatus;
             database.UpdateUser(userRecord);  
             return new BotReply(user, GetReplyType(chatStatus), null);
