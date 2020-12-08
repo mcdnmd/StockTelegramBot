@@ -1,39 +1,43 @@
 using System;
-using App.BotTask;
 using Infrastructure;
 
 namespace App
 {
     public class BotLogic
     {
+        private IDataBase userDB;
+
+        public Action<BotReply> OnReply;
+
+        public BotLogic(IDataBase userDb)
+        {
+            userDB = userDb;
+        }
+        
         public void ExecuteUserRequest(UserRequest request)
         {
+            BotReply reply;
             switch (request.RequestType)
             {
+                case UserRequestType.Start:
+                    reply = new BotReply(request.User, BotReplyType.Start, null);
+                    break;
                 case UserRequestType.Register:
-                    //Register user in User DataBase
-                    break;
-                case UserRequestType.UnRegister:
-                    // Delete all info about user in User DataBase
-                    break;
-                case UserRequestType.UpdateUserInfo:
-                    // Change current user status for 'ChoseOptionForUpdateUserInfo'
+                    reply = new UserRegister().Register(userDB, request.User);
                     break;
                 case UserRequestType.SubscribeForSymbol:
-                    // Change current user status for 'EnterNewSubscription'
+                    reply = new ChatStatusManager().ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToAddNewSubscription);
                     break;
                 case UserRequestType.UnSubscribeForSymbol:
-                    // Change current user status for 'EnterDeleteSubscriptions'
-                    break;
-                case UserRequestType.UpdateUserInterfaceInfo:
-                    // Send for user ALL info about his subscriptions
+                    reply = new ChatStatusManager().ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToRemoveSubscription);
                     break;
                 case UserRequestType.InputRawData:
-                    // Check current user status and then parse input string
+                    reply = new InputDataParser().ParseData(userDB, request);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }    
+            OnReply(reply);
         }
     }
 }

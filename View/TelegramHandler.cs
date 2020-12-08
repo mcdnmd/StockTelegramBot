@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using App.BotReply;
-using App.BotTask;
+using App;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
@@ -31,19 +30,18 @@ namespace View
             botClient.StopReceiving();
         }
 
-        private async void BotOnMessage(object sender, MessageEventArgs e)
+        private void BotOnMessage(object sender, MessageEventArgs e)
         {
-            var userId = e.Message.Chat.Id;
-            UserRequestType userRequestType ;
+            var user = new TelegramUser(e.Message.Chat.Id);
+            UserRequestType userRequestType;
+            Dictionary<string, List<string>> parameters = default;
             switch (e.Message.Text)
             {
                 case null:
                     return;
                 case "/start":
-                    var parameters = new Dictionary<string, string>();
-                    parameters["text"] = "Hi, bro. Let`s start make money";
-                    SendReply(new BotReply(e.Message.Chat.Id, BotReplyType.UnknownCommand, parameters));
-                    return;
+                    userRequestType = UserRequestType.Start;
+                    break;
                 case "/register":
                     userRequestType = UserRequestType.Register;
                     break;
@@ -56,24 +54,77 @@ namespace View
                 default:
                     if (e.Message.Text.StartsWith('/'))
                     {
-                        var parameters1 = new Dictionary<string, string> {["text"] = $"Unknown command:{e.Message.Text}"};
-                        SendReply(new BotReply(e.Message.Chat.Id, BotReplyType.UnknownCommand, parameters1));
+                        HandleUnknownCommand(user, e.Message.Text);
                         return;
                     }
                     else
+                    {
                         userRequestType = UserRequestType.InputRawData;
+                        parameters = ParseInputData(e.Message.Text);
+                    }
                     break;
             }
-            OnMessage(new UserRequest(userId, userRequestType));
+            OnMessage(new UserRequest(user, userRequestType, parameters));
         }
 
-        private async void SendReply(BotReply botReply)
+        private void HandleUnknownCommand(TelegramUser user, string input)
         {
-            if (botReply.Parameters.ContainsKey("text"))
+            var reply = new BotReply(user, BotReplyType.UnknownCommand, null);
+            var text = $"Unknown command {input}";
+            SendReply(reply, text);
+        }
+
+        private Dictionary<string, List<string>> ParseInputData(string messageText)
+        {
+            var result = new Dictionary<string, List<string>>();
+            result["data"] = new List<string>();
+            var words = messageText.Split();
+            foreach (var word in words)
+                result["data"].Add(word);
+            return result;
+        }
+
+        public void BotOnReply(BotReply botReply)
+        {
+            string text = "";
+            switch (botReply.ReplyType)
+            {
+                case BotReplyType.Start:
+                    text = "Hi, I`m a stock parser!";
+                    break;
+                case BotReplyType.RequestForChoseParser:
+                    text = $"Enter parser";
+                    break;
+                case BotReplyType.RequestForEnterParserPublicToken:
+                    text = "Enter your public token";
+                    break;
+                case BotReplyType.RequestForEnterSymbol:
+                    text = "Enter symbol";
+                    break;
+                case BotReplyType.SingleSymbolInfo:
+                    break;
+                case BotReplyType.MultipleSymbolInfo:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            SendReply(botReply, text);
+        }
+        
+        private async void SendReply(BotReply botReply, string text)
+        {    
+            
+            if (!ReferenceEquals(botReply.Parameters, null) && botReply.Parameters.ContainsKey("text"))
             {
                 await botClient.SendTextMessageAsync(
-                    chatId: botReply.UserId, 
+                    chatId: botReply.User.Id, 
                     text: botReply.Parameters["text"]);
+            }
+            else
+            {
+                await botClient.SendTextMessageAsync(
+                    chatId: botReply.User.Id, 
+                    text: text);
             }
         }
     }

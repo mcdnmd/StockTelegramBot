@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 
-namespace App.BotReply
+namespace App
 {
     public class BotReply
     {
-        public long UserId;
+        public IUser User;
         public BotReplyType ReplyType;
         public Dictionary<string, string> Parameters;
 
-        public BotReply(long userId, BotReplyType botReplyType, Dictionary<string, string> parameters)
+        public BotReply(IUser user, BotReplyType botReplyType, Dictionary<string, string> parameters)
         {
-            UserId = userId;
+            User = user;
             ReplyType = botReplyType;
             Parameters = parameters;
         }
