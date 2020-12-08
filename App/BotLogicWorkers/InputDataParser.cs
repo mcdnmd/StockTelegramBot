@@ -52,6 +52,7 @@ namespace App
         {
             userRecord.ParserToken = publicToken[0];
             database.UpdateUser(userRecord);
+            userRecord.ChatStatus = ChatStatus.None;
             return BotReplyType.SuccessfullyEnterToken;
         }
 
@@ -71,6 +72,7 @@ namespace App
                     botReplyType = BotReplyType.UnknownParser;
                     break;
             }
+            userRecord.ChatStatus = ChatStatus.EnterParserPublicToken;
             database.UpdateUser(userRecord);
             return botReplyType;
         }
