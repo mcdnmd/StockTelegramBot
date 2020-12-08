@@ -112,8 +112,9 @@ namespace View
         }
         
         private async void SendReply(BotReply botReply, string text)
-        {
-            if (botReply.Parameters.ContainsKey("text"))
+        {    
+            
+            if (!ReferenceEquals(botReply.Parameters, null) && botReply.Parameters.ContainsKey("text"))
             {
                 await botClient.SendTextMessageAsync(
                     chatId: botReply.User.Id, 
