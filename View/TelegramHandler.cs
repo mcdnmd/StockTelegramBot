@@ -105,6 +105,15 @@ namespace View
                     break;
                 case BotReplyType.MultipleSymbolInfo:
                     break;
+                case BotReplyType.UnknownParser:
+                    text = "You enter unknown parser";
+                    break;
+                case BotReplyType.SuccessfullyRemoveSymbol:
+                    break;
+                case BotReplyType.SuccessfullyAddSymbol:
+                    break;
+                case BotReplyType.SuccessfullyEnterToken:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
