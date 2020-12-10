@@ -11,10 +11,10 @@ namespace App
             var userRecord = database.FindUser(user.Id).Result;
             userRecord.ChatStatus = chatStatus;
             database.UpdateUser(userRecord);  
-            return new BotReply(user, GetReplyType(chatStatus), null);
+            return new BotReply(user, GetBotReplyType(chatStatus), null);
         }
 
-        private BotReplyType GetReplyType(ChatStatus chatStatus)
+        private BotReplyType GetBotReplyType(ChatStatus chatStatus)
         {
             return chatStatus switch
             {
