@@ -7,6 +7,10 @@ namespace App
     {
         private IDataBase userDB;
 
+        private UserRegister userRegister = new UserRegister();
+        private ChatStatusManager chatStatusManager = new ChatStatusManager();
+        private InputDataParser inputParserData = new InputDataParser();
+
         public Action<BotReply> OnReply;
 
         public BotLogic(IDataBase userDb)
@@ -23,16 +27,16 @@ namespace App
                     reply = new BotReply(request.User, BotReplyType.Start, null);
                     break;
                 case UserRequestType.Register:
-                    reply = new UserRegister().Register(userDB, request.User);
+                    reply = userRegister.Register(userDB, request.User);
                     break;
                 case UserRequestType.SubscribeForSymbol:
-                    reply = new ChatStatusManager().ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToAddNewSubscription);
+                    reply = chatStatusManager.ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToAddNewSubscription);
                     break;
                 case UserRequestType.UnSubscribeForSymbol:
-                    reply = new ChatStatusManager().ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToRemoveSubscription);
+                    reply = chatStatusManager.ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToRemoveSubscription);
                     break;
                 case UserRequestType.InputRawData:
-                    reply = new InputDataParser().ParseData(userDB, request);
+                    reply = inputParserData.ParseData(userDB, request);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
