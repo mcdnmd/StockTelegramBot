@@ -60,6 +60,7 @@ namespace App
         {
             var parserName = parserNames[0];
             var botReplyType = BotReplyType.RequestForEnterParserPublicToken;
+            userRecord.ChatStatus = ChatStatus.EnterParserPublicToken;
             switch (parserName)
             {
                 case "IEXCloud":
@@ -70,9 +71,9 @@ namespace App
                     break;
                 default:
                     botReplyType = BotReplyType.UnknownParser;
+                    userRecord.ChatStatus = ChatStatus.ChoseParser;
                     break;
             }
-            userRecord.ChatStatus = ChatStatus.EnterParserPublicToken;
             database.UpdateUser(userRecord);
             return botReplyType;
         }
