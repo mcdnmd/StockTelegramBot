@@ -86,7 +86,7 @@ namespace View
 
         public void BotOnReply(BotReply botReply)
         {
-            string text = "";
+            string text = "Lox";
             switch (botReply.ReplyType)
             {
                 case BotReplyType.Start:
@@ -104,6 +104,20 @@ namespace View
                 case BotReplyType.SingleSymbolInfo:
                     break;
                 case BotReplyType.MultipleSymbolInfo:
+                    break;
+                case BotReplyType.UnknownParser:
+                    text = "You enter unknown parser";
+                    break;
+                case BotReplyType.SuccessfullyRemoveSymbol:
+                    text = "You successfully remove symbol";
+                    break;
+                case BotReplyType.SuccessfullyAddSymbol:
+                    text = "You successfully add symbol";
+                    break;
+                case BotReplyType.SuccessfullyEnterToken:
+                    text = "You successfully enter token";
+                    break;
+                case BotReplyType.UnknownCommand:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
