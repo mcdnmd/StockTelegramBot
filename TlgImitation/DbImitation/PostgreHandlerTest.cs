@@ -1,14 +1,11 @@
-using System;
-using System.Net;
 using System.Threading.Tasks;
-using Domain;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure;
 
-namespace Infrastructure
+namespace TlgImitation.DbImitation
 {
-    public class PostgreHandler : IDataBase
+    public class PostgreHandlerTest : IDataBase
     {
-        private readonly PostgresqlDbContext _dbContextTest = new PostgresqlDbContext();
+        private readonly PostgresqlDbContextTest _dbContextTest = new PostgresqlDbContextTest();
         public async Task<UserRecord> FindUser(long id) => await _dbContextTest.UserRecords.FindAsync(id);
 
         public async Task<UserRecord> AddNewUser(UserRecord userRecord)
