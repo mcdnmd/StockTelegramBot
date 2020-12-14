@@ -10,7 +10,7 @@ namespace Infrastructure
             var a = new SQLiteHandler();
             a.AddNewUser(new UserRecord()
             {
-                Id = 2, Subscriptons = new List<string>(){"ggg"},ChatStatus = ChatStatus.ChoseParser,
+                Id = 3, Subscriptons = new List<string>(){"ggg"},ChatStatus = ChatStatus.ChoseParser,
                 ParserName = ParserName.Finnhub, ParserToken = "lflflf"
             });
             a.FindUser(1);

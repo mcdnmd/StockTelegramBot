@@ -11,7 +11,7 @@ namespace Infrastructure
     {
         public async Task<SqliteDataReader> SendSQL(string sql)
         {
-            Console.WriteLine(GetDBName("Users"));
+            Console.WriteLine(GetDBName("users"));
             var connection = new SqliteConnection($"Data Source={GetDBName("Users")}");
             connection.Open();
             var command = new SqliteCommand(sql, connection);

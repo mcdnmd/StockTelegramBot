@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
@@ -9,16 +11,16 @@ namespace Infrastructure
         private SQLiteContext _context = new SQLiteContext();
         public Task<UserRecord> FindUser(long id)
         {
-            var result = _context.SendSQL($"SELECT * FROM Users WHERE Id={id}");
-            
+            var result = _context.SendSQL($"SELECT * FROM Users WHERE Id={id};");
             return DataToUser(result.Result);
         }
 
         public Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
-            var result = _context.SendSQL($"INSERT INTO Users (Id, ChatStatus, Subscriptions, ParserName, " +
-                                     $"ParserToken) VALUES ({userRecord.Id},{(int) userRecord.ChatStatus}," +
-                                     $"{userRecord.Subscriptons.ToString()},{(int) userRecord.ParserName},{userRecord.ParserToken})");
+            var result = _context.SendSQL(string.Format("INSERT INTO Users (Id, ChatStatus, Subscriptions, ParserName, " +
+                                     "ParserToken) VALUES ({0}, {1}, " +
+                                     "'{2}', {3}, '{4}');", userRecord.Id,
+                (int) userRecord.ChatStatus, userRecord.Subscriptons.ToString(), (int)userRecord.ParserName, userRecord.ParserToken));
             return DataToUser(result.Result);
         }
 
