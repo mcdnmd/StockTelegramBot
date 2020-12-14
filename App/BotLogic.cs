@@ -10,6 +10,7 @@ namespace App
         private UserRegister userRegister = new UserRegister();
         private ChatStatusManager chatStatusManager = new ChatStatusManager();
         private InputDataParser inputParserData = new InputDataParser();
+        private StockManager stockManager = new StockManager();
 
         public Action<BotReply> OnReply;
 
@@ -43,6 +44,9 @@ namespace App
                     break;
                 case UserRequestType.InputRawData:
                     reply = inputParserData.ParseData(userDB, request);
+                    break;
+                case UserRequestType.GetAllSymbolPrices:
+                    reply = stockManager.GetAllPrices(userDB, request);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

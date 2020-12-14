@@ -57,6 +57,9 @@ namespace View
                 case "/removesymbol":
                     userRequestType = UserRequestType.UnSubscribeForSymbol;
                     break;
+                case "/getprices":
+                    userRequestType = UserRequestType.GetAllSymbolPrices;
+                    break;
                 default:
                     if (message.StartsWith('/'))
                     {
@@ -142,11 +145,11 @@ namespace View
         public async void SendReply(BotReply botReply, string text)
         {    
             
-            if (!ReferenceEquals(botReply.Parameters, null) && botReply.Parameters.ContainsKey("text"))
+            if (!ReferenceEquals(botReply.SymbolParameters, null) && botReply.SymbolParameters.ContainsKey("text"))
             {
                 await botClient.SendTextMessageAsync(
                     chatId: botReply.User.Id, 
-                    text: botReply.Parameters["text"]);
+                    text: botReply.SymbolParameters["text"]["formated"]);
             }
             else
             {

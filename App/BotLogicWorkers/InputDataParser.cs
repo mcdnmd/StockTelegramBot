@@ -10,9 +10,9 @@ namespace App
         {
             Console.WriteLine(userRequest.User.Id + " " + userRequest.Parameters["data"][0]);
             var userRecord = database.FindUser(userRequest.User.Id).Result;
-            Console.WriteLine(userRecord.ChatStatus);
             if (ReferenceEquals(userRecord, null))
                 return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
+            Console.WriteLine(userRecord.ChatStatus);
             BotReplyType type;
             switch (userRecord.ChatStatus)
             {

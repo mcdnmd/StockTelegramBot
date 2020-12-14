@@ -6,13 +6,14 @@ namespace App
     {
         public IUser User;
         public BotReplyType ReplyType;
-        public Dictionary<string, string> Parameters;
+        public Dictionary<string, Dictionary<string, string>> SymbolParameters;
 
-        public BotReply(IUser user, BotReplyType botReplyType, Dictionary<string, string> parameters)
+        public BotReply(IUser user, BotReplyType botReplyType,
+            Dictionary<string, Dictionary<string, string>> symbolParameters)
         {
             User = user;
             ReplyType = botReplyType;
-            Parameters = parameters;
+            SymbolParameters = symbolParameters;
         }
     }
 }

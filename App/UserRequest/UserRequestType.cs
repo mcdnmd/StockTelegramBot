@@ -12,5 +12,6 @@ namespace App
         UnSubscribeForSymbol,
         UpdateUserInterfaceInfo,
         InputRawData,
+        GetAllSymbolPrices
     }
 }
