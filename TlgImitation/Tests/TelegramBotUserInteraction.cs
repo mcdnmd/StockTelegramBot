@@ -1,4 +1,5 @@
 using App;
+using Infrastructure;
 using NUnit.Framework;
 using Telegram.Bot.Args;
 using TlgImitation.DbImitation;
@@ -20,7 +21,6 @@ namespace TlgImitation.Tests
             
             botLogic = new BotLogic(new MockDataBase());
             telegramHandler = new TelegramHandler(null);
-            
             telegramHandler.OnMessage += botLogic.ExecuteUserRequest;
             botLogic.OnReply += Nothing;
         }
@@ -36,6 +36,19 @@ namespace TlgImitation.Tests
         {
             var userRequest = telegramHandler.ParseUserMessageText(telegramUser, message);
             Assert.AreEqual(expected, userRequest.RequestType);
+        }
+
+        [TestCase("/register", ChatStatus.ChoseParser)]
+        [TestCase("/addsymbol", ChatStatus.ChoseParser)]
+        public void SimpeTest(string message, ChatStatus expected)
+        {
+            var databse = new MockDataBase();
+            var botLogic = new BotLogic(databse);
+            
+            var userRequest = telegramHandler.ParseUserMessageText(telegramUser, message);
+            botLogic.Execute(userRequest);
+            
+            Assert.AreEqual(expected, databse.Users[telegramUser.Id].ChatStatus);
         }
 
         private void Nothing(BotReply obj)

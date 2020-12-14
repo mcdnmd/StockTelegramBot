@@ -9,7 +9,7 @@ namespace App
         {
             var userRecord = dataBase.FindUser(user.Id).Result;
             foreach (var symbol in symbols)
-                userRecord.Subscriptons.Add(symbol);
+                userRecord.Subscriptions.Add(symbol);
             userRecord.ChatStatus = ChatStatus.None; 
             dataBase.UpdateUser(userRecord);
         }
@@ -18,7 +18,7 @@ namespace App
         {
             var userRecord = dataBase.FindUser(user.Id).Result;
             foreach (var symbol in symbols)
-                userRecord.Subscriptons.Remove(symbol);
+                userRecord.Subscriptions.Remove(symbol);
             userRecord.ChatStatus = ChatStatus.None;
         }
     }

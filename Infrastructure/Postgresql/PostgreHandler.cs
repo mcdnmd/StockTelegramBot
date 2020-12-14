@@ -8,27 +8,32 @@ namespace Infrastructure
 {
     public class PostgreHandler : IDataBase
     {
-        private readonly PostgresqlDbContext _dbContextTest = new PostgresqlDbContext();
-        public async Task<UserRecord> FindUser(long id) => await _dbContextTest.UserRecords.FindAsync(id);
+        private readonly PostgresqlDbContext dbContext = new PostgresqlDbContext();
+
+        public async Task<UserRecord> FindUser(long id)
+        {
+            return await dbContext.UserRecords.FindAsync(id);
+        }
 
         public async Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
-            await _dbContextTest.UserRecords.AddAsync(userRecord);
-            await _dbContextTest.SaveChangesAsync();
+            
+            await dbContext.UserRecords.AddAsync(userRecord);
+            await dbContext.SaveChangesAsync();
             return userRecord;
         }
 
         public async Task<UserRecord> UpdateUser(UserRecord userRecord)
         {
-            _dbContextTest.UserRecords.Update(userRecord);
-            await _dbContextTest.SaveChangesAsync();
+            dbContext.UserRecords.Update(userRecord);
+            await dbContext.SaveChangesAsync();
             return userRecord;
         }
 
         public async Task<UserRecord> RemoveUser(UserRecord userRecord)
         {
-            _dbContextTest.UserRecords.Remove(userRecord);
-            await _dbContextTest.SaveChangesAsync();
+            dbContext.UserRecords.Remove(userRecord);
+            await dbContext.SaveChangesAsync();
             return userRecord;
         }
     }

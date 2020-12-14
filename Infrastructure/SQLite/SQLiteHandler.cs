@@ -18,14 +18,14 @@ namespace Infrastructure
         {
             var result = _context.SendSQL($"INSERT INTO Users (Id, ChatStatus, Subscriptions, ParserName, " +
                                      $"ParserToken) VALUES ({userRecord.Id},{(int) userRecord.ChatStatus}," +
-                                     $"{userRecord.Subscriptons.ToString()},{(int) userRecord.ParserName},{userRecord.ParserToken})");
+                                     $"{userRecord.Subscriptions.ToString()},{(int) userRecord.ParserName},{userRecord.ParserToken})");
             return DataToUser(result.Result);
         }
 
         public Task<UserRecord> UpdateUser(UserRecord userRecord)
         {
             var result = _context.SendSQL($"UPDATE Users SET ChatStatus = {(int)userRecord.ChatStatus}, " +
-                                          $"Subscriptions = {userRecord.Subscriptons.ToString()}, ParserName = {(int)userRecord.ParserName}," +
+                                          $"Subscriptions = {userRecord.Subscriptions.ToString()}, ParserName = {(int)userRecord.ParserName}," +
                                           $"ParserToken = {userRecord.ParserToken} WHERE Id = {userRecord.Id}");
             return DataToUser(result.Result);
         }

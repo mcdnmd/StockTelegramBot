@@ -20,6 +20,12 @@ namespace App
         
         public void ExecuteUserRequest(UserRequest request)
         {
+            var reply = Execute(request);
+            OnReply(reply);
+        }
+
+        public BotReply Execute(UserRequest request)
+        {
             BotReply reply;
             switch (request.RequestType)
             {
@@ -40,8 +46,8 @@ namespace App
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-            }    
-            OnReply(reply);
+            }
+            return reply;
         }
     }
 }

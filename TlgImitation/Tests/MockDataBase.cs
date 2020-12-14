@@ -6,12 +6,12 @@ namespace TlgImitation
 {
     public class MockDataBase : IDataBase
     {
-        public Dictionary<long, UserRecord> dataBase = new Dictionary<long, UserRecord>();
+        public Dictionary<long, UserRecord> Users = new Dictionary<long, UserRecord>();
         public async Task<UserRecord> FindUser(long id)
         {
-            if (dataBase.ContainsKey(id))
+            if (Users.ContainsKey(id))
             {
-                return dataBase[id];
+                return Users[id];
             }
             return null;
         }
@@ -19,7 +19,7 @@ namespace TlgImitation
         public async Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
             var id = userRecord.Id;
-            dataBase[id] = userRecord;
+            Users[id] = userRecord;
             return userRecord;
         }
 
@@ -30,9 +30,9 @@ namespace TlgImitation
 
         public async Task<UserRecord> RemoveUser(UserRecord userRecord)
         {
-            if (dataBase.ContainsKey(userRecord.Id))
+            if (Users.ContainsKey(userRecord.Id))
             {
-                dataBase.Remove(userRecord.Id);
+                Users.Remove(userRecord.Id);
                 return userRecord;
             }
             return null;

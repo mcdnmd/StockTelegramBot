@@ -10,7 +10,7 @@ namespace App
             var userRecord = new UserRecord{
                 Id = user.Id, 
                 ChatStatus = ChatStatus.ChoseParser,
-                Subscriptons = new List<string>(),
+                Subscriptions = new List<string>(),
                 ParserName =  ParserName.None,
                 ParserToken = default,
 

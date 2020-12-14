@@ -33,7 +33,7 @@ namespace App
         private BotReplyType EnterSymbolToRemove(IDataBase database, UserRecord userRecord, List<string> symbols)
         {
             foreach (var symbol in symbols)
-                userRecord.Subscriptons.Remove(symbol);
+                userRecord.Subscriptions.Remove(symbol);
             userRecord.ChatStatus = ChatStatus.None;
             database.UpdateUser(userRecord);
             return BotReplyType.SuccessfullyRemoveSymbol;
@@ -42,7 +42,7 @@ namespace App
         private BotReplyType EnterSymbolToAdd(IDataBase database, UserRecord userRecord, List<string> symbols)
         {
             foreach (var symbol in symbols)
-                userRecord.Subscriptons.Add(symbol);
+                userRecord.Subscriptions.Add(symbol);
             userRecord.ChatStatus = ChatStatus.None; 
             database.UpdateUser(userRecord);
             return BotReplyType.SuccessfullyAddSymbol;
