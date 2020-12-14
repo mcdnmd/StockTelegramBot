@@ -149,7 +149,7 @@ namespace View
             {
                 await botClient.SendTextMessageAsync(
                     chatId: botReply.User.Id, 
-                    text: botReply.SymbolParameters["text"]["formated"]);
+                    text: botReply.SymbolParameters["text"]["AAPL"]);
             }
             else
             {

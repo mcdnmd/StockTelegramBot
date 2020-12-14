@@ -49,7 +49,8 @@ namespace Infrastructure
             var result = new UserRecord()
             {
                 Id = (long)values[0], ChatStatus = Enum.Parse<ChatStatus>(values[1].ToString()),
-                Subscriptions = values[2].ToString().Split(';').ToList(), ParserName = Enum.Parse<ParserName>(values[3].ToString()),
+                Subscriptions = values[2].ToString().Split(';').ToList(), 
+                ParserName = Enum.Parse<ParserName>(values[3].ToString()),
                 ParserToken = values[4].ToString()
             };
             return result;

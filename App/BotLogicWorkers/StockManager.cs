@@ -11,14 +11,16 @@ namespace App
         public BotReply GetAllPrices(IDataBase database, UserRequest userRequest)
         {
             var userRecord = database.FindUser(userRequest.User.Id).Result;
-            if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus == ChatStatus.None)
+            if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus != ChatStatus.None)
                 return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
             var symbols = userRecord.Subscriptions;
+            if (ReferenceEquals(symbols, null))
+                return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
             var parser = GetApiParser(userRecord.ParserName);
             var token = userRecord.ParserToken;
             var prices = MakeRequests(parser, symbols, token);
             var symbolParameters = new Dictionary<string, Dictionary<string, string>>();
-            symbolParameters["symbolsinfo"] = prices;
+            symbolParameters["text"] = prices;
             return new BotReply(userRequest.User, BotReplyType.MultipleSymbolInfo, symbolParameters);
         }
 
