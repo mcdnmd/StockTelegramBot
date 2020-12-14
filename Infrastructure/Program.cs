@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Infrastructure
 {
@@ -6,7 +7,13 @@ namespace Infrastructure
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var a = new SQLiteHandler();
+            a.AddNewUser(new UserRecord()
+            {
+                Id = 2, Subscriptons = new List<string>(){"ggg"},ChatStatus = ChatStatus.ChoseParser,
+                ParserName = ParserName.Finnhub, ParserToken = "lflflf"
+            });
+            a.FindUser(1);
         }
     }
 }
