@@ -6,11 +6,11 @@ using Telegram.Bot.Args;
 
 namespace View
 {
-    public class TelegramHandler
+    public class TelegramHandler : IUserClient
     {
         private ITelegramBotClient botClient;
 
-        public Action<UserRequest> OnMessage;
+        public Action<UserRequest> OnMessage { get; set; }
 
         public TelegramHandler(ITelegramBotClient botClient)
         {
@@ -19,7 +19,7 @@ namespace View
 
         public void Initialize()
         {
-            botClient.OnMessage += BotOnMessage;
+            botClient.OnMessage += OnMessageHandler;
             botClient.StartReceiving();
             
             // Debug mode START
@@ -30,15 +30,21 @@ namespace View
             botClient.StopReceiving();
         }
 
-        private void BotOnMessage(object sender, MessageEventArgs e)
+        public void OnMessageHandler(object sender, MessageEventArgs e)
         {
-            var user = new TelegramUser(e.Message.Chat.Id);
+            var userRequest = ParseUserMessageText(new TelegramUser(e.Message.Chat.Id), e.Message.Text);
+            if (userRequest.RequestType == UserRequestType.UnknownCommand)
+                HandleUnknownCommand(userRequest);
+            else
+                OnMessage(userRequest);
+        }
+
+        public UserRequest ParseUserMessageText(TelegramUser telegramUser, string message)
+        {
             UserRequestType userRequestType;
             Dictionary<string, List<string>> parameters = default;
-            switch (e.Message.Text)
+            switch (message)
             {
-                case null:
-                    return;
                 case "/start":
                     userRequestType = UserRequestType.Start;
                     break;
@@ -52,32 +58,37 @@ namespace View
                     userRequestType = UserRequestType.UnSubscribeForSymbol;
                     break;
                 default:
-                    if (e.Message.Text.StartsWith('/'))
+                    if (message.StartsWith('/'))
                     {
-                        HandleUnknownCommand(user, e.Message.Text);
-                        return;
+                        userRequestType = UserRequestType.UnknownCommand;
+                        parameters = new Dictionary<string, List<string>>
+                        {
+                            ["data"] = new List<string> {message}
+                        };
                     }
                     else
                     {
                         userRequestType = UserRequestType.InputRawData;
-                        parameters = ParseInputData(e.Message.Text);
+                        parameters = ParseInputData(message);
                     }
                     break;
             }
-            OnMessage(new UserRequest(user, userRequestType, parameters));
+            return new UserRequest(telegramUser, userRequestType, parameters);
+        }
+        
+        private void HandleUnknownCommand(UserRequest userRequest)
+        {
+            SendReply(
+                new BotReply(userRequest.User, BotReplyType.UnknownCommand, null), 
+                $"Unknown command {userRequest.Parameters["data"]}");
         }
 
-        private void HandleUnknownCommand(TelegramUser user, string input)
+        private static Dictionary<string, List<string>> ParseInputData(string messageText)
         {
-            var reply = new BotReply(user, BotReplyType.UnknownCommand, null);
-            var text = $"Unknown command {input}";
-            SendReply(reply, text);
-        }
-
-        private Dictionary<string, List<string>> ParseInputData(string messageText)
-        {
-            var result = new Dictionary<string, List<string>>();
-            result["data"] = new List<string>();
+            var result = new Dictionary<string, List<string>>
+            {
+                ["data"] = new List<string>()
+            };
             var words = messageText.Split();
             foreach (var word in words)
                 result["data"].Add(word);
@@ -93,7 +104,7 @@ namespace View
                     text = "Hi, I`m a stock parser!";
                     break;
                 case BotReplyType.RequestForChoseParser:
-                    text = $"Enter parser";
+                    text = "Enter parser";
                     break;
                 case BotReplyType.RequestForEnterParserPublicToken:
                     text = "Enter your public token";
@@ -120,12 +131,12 @@ namespace View
                 case BotReplyType.UnknownCommand:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new NotImplementedException();
             }
             SendReply(botReply, text);
         }
         
-        private async void SendReply(BotReply botReply, string text)
+        public async void SendReply(BotReply botReply, string text)
         {    
             
             if (!ReferenceEquals(botReply.Parameters, null) && botReply.Parameters.ContainsKey("text"))

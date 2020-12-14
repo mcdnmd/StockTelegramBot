@@ -20,7 +20,7 @@ namespace App
             {
                 ChatStatus.EnterSymbolToAddNewSubscription => BotReplyType.RequestForEnterSymbol,
                 ChatStatus.EnterSymbolToRemoveSubscription => BotReplyType.RequestForEnterSymbol,
-                _ => throw new ArgumentOutOfRangeException(nameof(chatStatus), chatStatus, null)
+                _ => throw new NotImplementedException()
             };
         }
     }

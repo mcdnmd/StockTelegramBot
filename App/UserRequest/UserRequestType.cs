@@ -2,6 +2,8 @@ namespace App
 {
     public enum UserRequestType
     {
+        None,
+        UnknownCommand,
         Start,
         Register,
         UnRegister,
@@ -9,6 +11,6 @@ namespace App
         SubscribeForSymbol,
         UnSubscribeForSymbol,
         UpdateUserInterfaceInfo,
-        InputRawData
+        InputRawData,
     }
 }
