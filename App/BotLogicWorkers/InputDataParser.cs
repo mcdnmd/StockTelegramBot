@@ -8,7 +8,11 @@ namespace App
     {
         public BotReply ParseData(IDataBase database, UserRequest userRequest)
         {
+            Console.WriteLine(userRequest.User.Id + " " + userRequest.Parameters["data"][0]);
             var userRecord = database.FindUser(userRequest.User.Id).Result;
+            Console.WriteLine(userRecord.ChatStatus);
+            if (ReferenceEquals(userRecord, null))
+                return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
             BotReplyType type;
             switch (userRecord.ChatStatus)
             {
@@ -24,6 +28,8 @@ namespace App
                 case ChatStatus.EnterSymbolToRemoveSubscription:
                     type = EnterSymbolToRemove(database, userRecord, userRequest.Parameters["data"]);
                     break;
+                case ChatStatus.None:
+                    return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -51,8 +57,8 @@ namespace App
         private BotReplyType EnterPublicToken(IDataBase database, UserRecord userRecord, List<string> publicToken)
         {
             userRecord.ParserToken = publicToken[0];
-            database.UpdateUser(userRecord);
             userRecord.ChatStatus = ChatStatus.None;
+            database.UpdateUser(userRecord);
             return BotReplyType.SuccessfullyEnterToken;
         }
 

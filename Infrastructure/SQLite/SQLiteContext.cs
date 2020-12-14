@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -9,15 +10,20 @@ namespace Infrastructure
 {
     public class SQLiteContext
     {
-        public async Task<SqliteDataReader> SendSQL(string sql)
+        public async Task<DbDataRecord> SendSQL(string sql)
         {
-            Console.WriteLine(GetDBName("Users"));
-            var connection = new SqliteConnection($"Data Source={GetDBName("Users")}");
+            Console.WriteLine(GetDBName("users"));
+            var connection = new SqliteConnection($"Data Source={GetDBName("users")}");
             connection.Open();
             var command = new SqliteCommand(sql, connection);
-            var reader = command.ExecuteReader();
+            var reader = await command.ExecuteReaderAsync();
+            foreach (DbDataRecord record in reader)
+            {
+                connection.Close();
+                return record;
+            }
             connection.Close();
-            return reader; 
+            return null;
         }
         
         public string GetDBName(string fileName, string extension = "db")
@@ -30,6 +36,7 @@ namespace Infrastructure
                 dbName.Append($"/{catalog}");
                 if (catalog == "Infrastructure")
                 {
+                    //dbName.Append("/SQLite");
                     break;
                 }    
             }

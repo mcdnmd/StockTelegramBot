@@ -3,8 +3,10 @@ namespace App
     public enum BotReplyType
     {
         Start,
+        ImpossibleAction,
         UnknownCommand,
         RequestForChoseParser,
+        UnknownParser,
         RequestForEnterParserPublicToken,
         RequestForEnterSymbol,
         SingleSymbolInfo,
@@ -12,6 +14,5 @@ namespace App
         SuccessfullyRemoveSymbol,
         SuccessfullyAddSymbol,
         SuccessfullyEnterToken,
-        UnknownParser
     }
 }

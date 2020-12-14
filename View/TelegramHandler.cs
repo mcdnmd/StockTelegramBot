@@ -80,7 +80,7 @@ namespace View
         {
             SendReply(
                 new BotReply(userRequest.User, BotReplyType.UnknownCommand, null), 
-                $"Unknown command {userRequest.Parameters["data"]}");
+                $"Unknown command {userRequest.Parameters["data"][0]}");
         }
 
         private static Dictionary<string, List<string>> ParseInputData(string messageText)
@@ -97,7 +97,7 @@ namespace View
 
         public void BotOnReply(BotReply botReply)
         {
-            string text = "Lox";
+            string text = "SUPERMAN!";
             switch (botReply.ReplyType)
             {
                 case BotReplyType.Start:
@@ -129,6 +129,9 @@ namespace View
                     text = "You successfully enter token";
                     break;
                 case BotReplyType.UnknownCommand:
+                    break;
+                case BotReplyType.ImpossibleAction:
+                    text = "Impossible Action";
                     break;
                 default:
                     throw new NotImplementedException();

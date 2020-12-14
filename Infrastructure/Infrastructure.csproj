@@ -17,4 +17,12 @@
       <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="bin\Debug\netcoreapp3.1\users.db" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="bin\Debug\netcoreapp3.1" />
+    </ItemGroup>
+
 </Project>
