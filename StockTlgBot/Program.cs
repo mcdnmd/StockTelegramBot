@@ -23,7 +23,7 @@ namespace StockTlgBot
         {
             const string botToken = "1355877173:AAEOcVr6dZGmjd5K7L2SrFNJXl2459nb4QE";
             var container = new StandardKernel();
-            container.Bind<IDataBase>().To<SQLiteHandler>();
+            container.Bind<IDataBase>().To<PostgreHandler>();
             
             //container.Bind<IUserClient>().To<TelegramHandler>();
             //botClient = container.Get<ITelegramBotClient>();

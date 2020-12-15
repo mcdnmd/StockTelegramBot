@@ -14,6 +14,5 @@ namespace App
         SuccessfullyRemoveSymbol,
         SuccessfullyAddSymbol,
         SuccessfullyEnterToken,
-        
     }
 }

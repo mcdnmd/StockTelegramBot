@@ -166,9 +166,13 @@ namespace View
             var result = new StringBuilder();
             foreach (var (key, value) in botReplySymbolParameter)
             {
-                result.Append($"🦠 {key}: {value} $\n");
+                if (ReferenceEquals(value, null) || value == "0")
+                {
+                    result.Append($"❌ {key}: not found\n");
+                    continue;   
+                }
+                result.Append($"✔️ {key}: {value} $\n");
             }
-
             return result.ToString();
         }
     }

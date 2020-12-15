@@ -19,7 +19,14 @@ namespace Infrastructure
         public async Task<string> Get()
         {
             var response = await client.GetAsync(Url);
-            ProcessResponse(response);
+            try
+            {
+                ProcessResponse(response);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
             return await response.Content.ReadAsStringAsync();
         }
 
@@ -29,9 +36,10 @@ namespace Infrastructure
             {
                 response.EnsureSuccessStatusCode();
             }
-            catch(HttpRequestException)
+            catch(HttpRequestException e)
             {
-                Console.WriteLine(response.RequestMessage);
+                Console.WriteLine(e + " " + response.RequestMessage);
+                throw;
             }
         }
     }

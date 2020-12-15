@@ -26,7 +26,14 @@ namespace App
 
         private Dictionary<string, string> MakeRequests(IParserApi parser, List<string> symbols, string token)
         {
-            return symbols.ToDictionary(symbol => symbol, symbol => parser.GetInfo(symbol, token).CurrentPrice);
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            foreach (var symbol in symbols)
+            {
+                var parserReply = parser.GetInfo(symbol, token);
+                dictionary.Add(symbol, parserReply?.CurrentPrice);
+            }
+
+            return dictionary;
         }
 
         private IParserApi GetApiParser(ParserName parserApiType)
