@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Infrastructure;
+using Newtonsoft.Json;
 
 namespace App
 {
@@ -15,7 +17,7 @@ namespace App
             Symbol = symbol;
             Token = token;
             Console.WriteLine(Url);
-            var http = JsonParser.Parse(new HttpApiClient(Url).Get().Result);
+            var http = JsonConvert.DeserializeObject<Dictionary<string, string>>(new HttpApiClient(Url).Get().Result);
             var result = new ParserReply
             {
                 Symbol = symbol, 

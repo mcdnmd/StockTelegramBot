@@ -19,19 +19,25 @@ namespace Infrastructure
 
         public Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
+            var subscriptions = string.Join(';', userRecord.Subscriptions.ToArray());
+            if (subscriptions.Length > 0 && subscriptions[0] == ';')
+                subscriptions = subscriptions.Substring(1);
             var result = _context.SendSQL(string.Format("INSERT INTO Users (Id, ChatStatus, Subscriptions, ParserName, " +
                                      "ParserToken) VALUES ({0}, {1}, " +
                                      "'{2}', {3}, '{4}');", userRecord.Id,
-                (int) userRecord.ChatStatus, string.Join(';', userRecord.Subscriptions.ToArray()), (int)userRecord.ParserName, userRecord.ParserToken));
+                (int) userRecord.ChatStatus, subscriptions, (int)userRecord.ParserName, userRecord.ParserToken));
             return DataToUser(result.Result);
         }
 
         public Task<UserRecord> UpdateUser(UserRecord userRecord)
         {
+            var subscriptions = string.Join(';', userRecord.Subscriptions.ToArray());
+            if (subscriptions.Length > 0 && subscriptions[0] == ';')
+                subscriptions = subscriptions.Substring(1);
             var result = _context.SendSQL(string.Format("UPDATE Users SET ChatStatus = {0}, " +
-                                          "Subscriptions = '{1}', ParserName = {2}," +
-                                          "ParserToken = '{3}' WHERE Id = {4}", 
-                (int)userRecord.ChatStatus, string.Join(';', userRecord.Subscriptions.ToArray()), (int)userRecord.ParserName,
+                                                        "Subscriptions = '{1}', ParserName = {2}," +
+                                                        "ParserToken = '{3}' WHERE Id = {4}", 
+                (int)userRecord.ChatStatus,subscriptions , (int)userRecord.ParserName,
                 userRecord.ParserToken, userRecord.Id));
             return DataToUser(result.Result);
         }

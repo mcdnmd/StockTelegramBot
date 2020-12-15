@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using App;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -147,9 +148,10 @@ namespace View
             
             if (!ReferenceEquals(botReply.SymbolParameters, null) && botReply.SymbolParameters.ContainsKey("text"))
             {
+                text = СreateFormatedSymbol(botReply.SymbolParameters["text"]);
                 await botClient.SendTextMessageAsync(
                     chatId: botReply.User.Id, 
-                    text: botReply.SymbolParameters["text"]["AAPL"]);
+                    text: text);
             }
             else
             {
@@ -157,6 +159,17 @@ namespace View
                     chatId: botReply.User.Id, 
                     text: text);
             }
+        }
+
+        private string СreateFormatedSymbol(Dictionary<string, string> botReplySymbolParameter)
+        {
+            var result = new StringBuilder();
+            foreach (var (key, value) in botReplySymbolParameter)
+            {
+                result.Append($"🦠 {key}: {value} $\n");
+            }
+
+            return result.ToString();
         }
     }
 }
