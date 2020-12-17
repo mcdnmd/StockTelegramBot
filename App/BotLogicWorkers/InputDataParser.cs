@@ -1,18 +1,29 @@
 using System;
 using System.Collections.Generic;
+using App.Logger;
 using Infrastructure;
 
 namespace App
 {
     public class InputDataParser
     {
+        private ILogger logger;
+
+        public InputDataParser(ILogger logger)
+        {
+            this.logger = logger;
+        }
+        
         public BotReply ParseData(IDataBase database, UserRequest userRequest)
         {
-            Console.WriteLine(userRequest.User.Id + " " + userRequest.Parameters["data"][0]);
+            logger.MakeLog(userRequest.User.Id + " " + userRequest.Parameters["data"][0]);
+            
             var userRecord = database.FindUser(userRequest.User.Id).Result;
             if (ReferenceEquals(userRecord, null))
                 return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
-            Console.WriteLine(userRecord.ChatStatus);
+            
+            logger.MakeLog(userRecord.ChatStatus.ToString());
+            
             BotReplyType type;
             switch (userRecord.ChatStatus)
             {

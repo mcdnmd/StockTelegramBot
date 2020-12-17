@@ -17,7 +17,7 @@ namespace App
             Symbol = symbol;
             Token = token;
             Console.WriteLine(Url);
-            var httpResponse = new HttpApiClient(Url).Get().Result;
+            var httpResponse = new HttpApiClient().Get(Url).Result;
             if (ReferenceEquals(httpResponse, null))
                 return null;
             var http = JsonConvert.DeserializeObject<Dictionary<string, string>>(httpResponse);

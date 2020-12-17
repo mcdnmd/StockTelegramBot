@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using App.Logger;
 using App.PublicParserAPI;
 using Infrastructure;
 
@@ -8,6 +9,14 @@ namespace App
 {
     public class StockManager
     {
+        
+        private ILogger logger;
+
+        public StockManager(ILogger logger)
+        {
+            this.logger = logger;
+        }
+        
         public BotReply GetAllPrices(IDataBase database, UserRequest userRequest)
         {
             var userRecord = database.FindUser(userRequest.User.Id).Result;
@@ -26,7 +35,7 @@ namespace App
 
         private Dictionary<string, string> MakeRequests(IParserApi parser, List<string> symbols, string token)
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            var dictionary = new Dictionary<string, string>();
             foreach (var symbol in symbols)
             {
                 var parserReply = parser.GetInfo(symbol, token);

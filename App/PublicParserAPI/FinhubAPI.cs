@@ -17,7 +17,7 @@ namespace App
             Symbol = symbol;
             Token = token;
             Console.WriteLine(Url);
-            var http = JsonConvert.DeserializeObject<Dictionary<string, string>>(new HttpApiClient(Url).Get().Result);
+            var http = JsonConvert.DeserializeObject<Dictionary<string, string>>(new HttpApiClient().Get(Url).Result);
             var result = new ParserReply
             {
                 Symbol = symbol, 

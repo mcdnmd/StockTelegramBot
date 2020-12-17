@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure

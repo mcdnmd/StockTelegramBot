@@ -4,21 +4,20 @@ using System.Threading.Tasks;
 
 namespace Infrastructure
 {
-    public class HttpApiClient
+    public class HttpApiClient : IHttpClient
     {
         private readonly HttpClient client;
         private readonly string Url;
 
-        public HttpApiClient(string url)
+        public HttpApiClient()
         {
             client = new HttpClient();
-            Url = url;
         }
 
 
-        public async Task<string> Get()
+        public async Task<string> Get(string url)
         {
-            var response = await client.GetAsync(Url);
+            var response = await client.GetAsync(url);
             try
             {
                 ProcessResponse(response);
@@ -30,7 +29,7 @@ namespace Infrastructure
             return await response.Content.ReadAsStringAsync();
         }
 
-        public static void ProcessResponse(HttpResponseMessage response)
+        private static void ProcessResponse(HttpResponseMessage response)
         {
             try
             {

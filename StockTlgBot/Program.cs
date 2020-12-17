@@ -1,10 +1,12 @@
 ﻿using System;
 using App;
+using App.Logger;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using View;
 using Ninject;
+using View.Telegram;
 
 namespace StockTlgBot
 {
@@ -13,7 +15,7 @@ namespace StockTlgBot
      * Данный класс запускает работу всего бота. Внутри класса будет инициализация баз данных, обработчика телеграма и
      * остальных компонент системы.
      */
-    static class Program
+    internal static class Program
     {
         private static ITelegramBotClient botClient;
         private static BotLogic botLogic;
@@ -24,13 +26,19 @@ namespace StockTlgBot
             const string botToken = "1355877173:AAEOcVr6dZGmjd5K7L2SrFNJXl2459nb4QE";
             var container = new StandardKernel();
             container.Bind<IDataBase>().To<PostgreHandler>();
-            
-            //container.Bind<IUserClient>().To<TelegramHandler>();
-            //botClient = container.Get<ITelegramBotClient>();
-            
+            container.Bind<IHttpClient>().To<HttpApiClient>();
+            container.Bind<IInputParser>().To<InputParser>();
+            container.Bind<IOutputRender>().To<OutputRender>();
+            container.Bind<ILogger>().To<ConsoleLogger>();
+
             botClient = new TelegramBotClient(botToken);
-            botLogic = new BotLogic(container.Get<IDataBase>());
-            telegramHandler = new TelegramHandler(botClient);
+            
+            botLogic = new BotLogic(container.Get<IDataBase>(), container.Get<ILogger>());
+            
+            telegramHandler = new TelegramHandler(
+                botClient, 
+                container.Get<IInputParser>(), 
+                container.Get<IOutputRender>());
             
             AddAllEventHandlers();
             

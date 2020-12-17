@@ -1,4 +1,5 @@
 using System;
+using App.Logger;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -6,10 +7,17 @@ namespace App
 {
     public class ChatStatusManager
     {
+        private ILogger logger;
+
+        public ChatStatusManager(ILogger logger)
+        {
+            this.logger = logger;
+        }
+        
         public BotReply ChangeCurrentChatStatus(IDataBase database, IUser user, ChatStatus chatStatus)
         {
             var userRecord = database.FindUser(user.Id).Result;
-            Console.WriteLine(userRecord.ChatStatus);
+            logger.MakeLog(userRecord.ChatStatus.ToString());
             if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus != ChatStatus.None)
                 return new BotReply(user, BotReplyType.ImpossibleAction, null);
             userRecord.ChatStatus = chatStatus;

@@ -1,4 +1,5 @@
 using System;
+using App.Logger;
 using Infrastructure;
 
 namespace App
@@ -7,16 +8,20 @@ namespace App
     {
         private IDataBase userDB;
 
-        private UserRegister userRegister = new UserRegister();
-        private ChatStatusManager chatStatusManager = new ChatStatusManager();
-        private InputDataParser inputParserData = new InputDataParser();
-        private StockManager stockManager = new StockManager();
+        private UserRegister userRegister;
+        private ChatStatusManager chatStatusManager;
+        private InputDataParser inputParserData;
+        private StockManager stockManager;
 
         public Action<BotReply> OnReply;
 
-        public BotLogic(IDataBase userDb)
+        public BotLogic(IDataBase userDb, ILogger logger)
         {
             userDB = userDb;
+            userRegister = new UserRegister(logger);
+            chatStatusManager = new ChatStatusManager(logger);
+            inputParserData = new InputDataParser(logger);
+            stockManager = new StockManager(logger);
         }
         
         public void ExecuteUserRequest(UserRequest request)
