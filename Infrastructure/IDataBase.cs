@@ -12,5 +12,7 @@ namespace Infrastructure
         public Task<UserRecord> UpdateUser(UserRecord userRecord);
 
         public Task<UserRecord> RemoveUser(UserRecord userRecord);
+
+        public Task<List<UserRecord>> GetAllUsers();
     }
 }

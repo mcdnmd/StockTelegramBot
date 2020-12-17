@@ -14,7 +14,8 @@ namespace Infrastructure
         {
             var result = _context.SendSQL($"SELECT Id, ChatStatus, Subscriptions, ParserName, " +
                                           $"ParserToken FROM Users WHERE Id={id};");
-            return DataToUser(result.Result);
+            var record = result.Result;
+            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
         }
 
         public Task<UserRecord> AddNewUser(UserRecord userRecord)
@@ -26,7 +27,8 @@ namespace Infrastructure
                                      "ParserToken) VALUES ({0}, {1}, " +
                                      "'{2}', {3}, '{4}');", userRecord.Id,
                 (int) userRecord.ChatStatus, subscriptions, (int)userRecord.ParserName, userRecord.ParserToken));
-            return DataToUser(result.Result);
+            var record = result.Result;
+            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
         }
 
         public Task<UserRecord> UpdateUser(UserRecord userRecord)
@@ -39,19 +41,27 @@ namespace Infrastructure
                                                         "ParserToken = '{3}' WHERE Id = {4}", 
                 (int)userRecord.ChatStatus,subscriptions , (int)userRecord.ParserName,
                 userRecord.ParserToken, userRecord.Id));
-            return DataToUser(result.Result);
+            var record = result.Result;
+            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
         }
 
         public Task<UserRecord> RemoveUser(UserRecord userRecord)
         {
             var result = _context.SendSQL($"DELETE FROM Users WHERE Id = {userRecord.Id}");
 
-            return DataToUser(result.Result);
+            var record = result.Result;
+            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
+        }
+
+        public async Task<List<UserRecord>> GetAllUsers()
+        {
+            return _context.SendSQL($"SELECT * FROM Users").Result.Select(record => DataToUser(record).Result).ToList();
         }
 
         public async Task<UserRecord> DataToUser(DbDataRecord values)
         {
-            if (values == null) return null;
+            if (values == null) 
+                return null;
             var result = new UserRecord()
             {
                 Id = (long)values[0], ChatStatus = Enum.Parse<ChatStatus>(values[1].ToString()),

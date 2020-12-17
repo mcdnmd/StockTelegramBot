@@ -4,6 +4,7 @@ namespace App
     {
         Start,
         ImpossibleAction,
+        UserAlreadyRegister,
         UnknownCommand,
         RequestForChoseParser,
         UnknownParser,

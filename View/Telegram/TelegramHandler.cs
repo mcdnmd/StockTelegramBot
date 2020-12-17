@@ -2,6 +2,8 @@ using System;
 using App;
 using Telegram.Bot;
 using Telegram.Bot.Args;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace View.Telegram
 {
@@ -35,6 +37,8 @@ namespace View.Telegram
 
         public void OnMessageHandler(object sender, MessageEventArgs e)
         {
+            if (e.Message.Type != MessageType.Text)
+                return;
             var userRequest = ParseUserMessageText(new TelegramUser(e.Message.Chat.Id), e.Message.Text);
             if (userRequest.RequestType == UserRequestType.UnknownCommand)
                 HandleUnknownCommand(userRequest);
@@ -57,23 +61,32 @@ namespace View.Telegram
         
         public void BotOnReply(BotReply botReply)
         {
-          
             SendReply(botReply, outputRender.RenderReply(botReply.ReplyType));
         }
         
         public async void SendReply(BotReply botReply, string text)
         {
-            if (!ReferenceEquals(botReply.SymbolParameters, null) && botReply.SymbolParameters.ContainsKey("text"))
+            ReplyKeyboardMarkup rkm;
+            if (botReply.ReplyType == BotReplyType.RequestForChoseParser)
+            {
+                rkm = new ReplyKeyboardMarkup {Keyboard = new[] {new KeyboardButton[] {"IEXCloud", "Finhub"}}};
+                await botClient.SendTextMessageAsync(
+                    chatId: botReply.User.Id, 
+                    replyMarkup: rkm,
+                    text: text);
+            }
+            else if (!ReferenceEquals(botReply.SymbolParameters, null) && botReply.SymbolParameters.ContainsKey("text"))
             {
                 text = outputRender.CreateSymbolsInfo(botReply.SymbolParameters["text"]);
                 await botClient.SendTextMessageAsync(
-                    chatId: botReply.User.Id, 
+                    chatId: botReply.User.Id,
                     text: text);
             }
             else
             {
                 await botClient.SendTextMessageAsync(
                     chatId: botReply.User.Id, 
+                    replyMarkup: new ReplyKeyboardRemove(),
                     text: text);
             }
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,11 @@ namespace Infrastructure
             dbContext.UserRecords.Remove(userRecord);
             await dbContext.SaveChangesAsync();
             return userRecord;
+        }
+
+        public Task<List<UserRecord>> GetAllUsers()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -23,9 +23,14 @@ namespace App
                 ParserToken = default,
 
             };
-            database.AddNewUser(userRecord);
-            logger.MakeLog($"Register new user: {user.Id}");
-            return new BotReply(user, BotReplyType.RequestForChoseParser, null);
+            if (ReferenceEquals(database.FindUser(user.Id), null))
+            {
+                database.AddNewUser(userRecord);
+                logger.MakeLog($"Register new user: {user.Id}");
+                return new BotReply(user, BotReplyType.RequestForChoseParser, null);
+            }
+            logger.MakeLog($"User {user.Id} already exists");
+            return new BotReply(user, BotReplyType.UserAlreadyRegister, null);
         }
     }
 }

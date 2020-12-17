@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,23 +12,24 @@ namespace Infrastructure
 {
     public class SQLiteContext
     {
-        public async Task<DbDataRecord> SendSQL(string sql)
+        public async Task<List<DbDataRecord>> SendSQL(string sql)
         {
             Console.WriteLine(GetDBName("users"));
             var connection = new SqliteConnection($"Data Source={GetDBName("users")}");
             connection.Open();
             var command = new SqliteCommand(sql, connection);
             var reader = await command.ExecuteReaderAsync();
-            foreach (DbDataRecord record in reader)
-            {
-                connection.Close();
-                return record;
-            }
+            var result = reader.Cast<DbDataRecord>().ToList();
+            connection.Close();
+            if (result.Count > 0)
+                return result;
             connection.Close();
             return null;
         }
         
-        public string GetDBName(string fileName, string extension = "db")
+        
+
+        private string GetDBName(string fileName, string extension = "db")
         {
             var path = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var catalogs = path.Split('\\');

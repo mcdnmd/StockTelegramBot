@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using App.Exceptions;
 using App.Logger;
 using App.PublicParserAPI;
 using Infrastructure;
@@ -22,17 +23,48 @@ namespace App
             var userRecord = database.FindUser(userRequest.User.Id).Result;
             if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus != ChatStatus.None)
                 return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
-            var symbols = userRecord.Subscriptions;
-            if (ReferenceEquals(symbols, null))
+            Dictionary<string, Dictionary<string, string>> symbolParameters;
+            try
+            {
+                symbolParameters = GetSymbolParameters(userRecord);
+            }
+            catch (EmptySymbolSubscriptionsException e)
+            {
+                logger.MakeLog(e.ToString());
                 return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
-            var parser = GetApiParser(userRecord.ParserName);
-            var token = userRecord.ParserToken;
-            var prices = MakeRequests(parser, symbols, token);
-            var symbolParameters = new Dictionary<string, Dictionary<string, string>>();
-            symbolParameters["text"] = prices;
+            }
             return new BotReply(userRequest.User, BotReplyType.MultipleSymbolInfo, symbolParameters);
         }
 
+        public BotReply GetUserPricesForScheduler(UserRecord userRecord)
+        {
+            if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus != ChatStatus.None)
+                throw new UserNotExistsException();
+            Dictionary<string, Dictionary<string, string>> symbolParameters;
+            try
+            {
+                symbolParameters = GetSymbolParameters(userRecord);
+            }
+            catch (EmptySymbolSubscriptionsException e)
+            {
+                logger.MakeLog(e.ToString());
+                throw;
+            }
+            return new BotReply(new ReplyUser{Id = userRecord.Id}, BotReplyType.MultipleSymbolInfo, symbolParameters);
+        }
+
+        private Dictionary<string, Dictionary<string, string>> GetSymbolParameters(UserRecord userRecord)
+        {
+            var symbols = userRecord.Subscriptions;
+            if (ReferenceEquals(symbols, null))
+                throw new EmptySymbolSubscriptionsException();
+            var parser = GetApiParser(userRecord.ParserName);
+            var token = userRecord.ParserToken;
+            var prices = MakeRequests(parser, symbols, token);
+            var symbolParameters = new Dictionary<string, Dictionary<string, string>> {["text"] = prices};
+            return symbolParameters;
+        }
+        
         private Dictionary<string, string> MakeRequests(IParserApi parser, List<string> symbols, string token)
         {
             var dictionary = new Dictionary<string, string>();
@@ -56,6 +88,11 @@ namespace App
                 default:
                     throw new NotImplementedException();
             }
+        }
+        
+        private class ReplyUser : IUser
+        {
+            public long Id { get; set; }
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using App.Logger;
 using Infrastructure;
 
@@ -12,6 +13,7 @@ namespace App
         private ChatStatusManager chatStatusManager;
         private InputDataParser inputParserData;
         private StockManager stockManager;
+        private SchedulerManager schedulerManager;
 
         public Action<BotReply> OnReply;
 
@@ -22,15 +24,16 @@ namespace App
             chatStatusManager = new ChatStatusManager(logger);
             inputParserData = new InputDataParser(logger);
             stockManager = new StockManager(logger);
+            schedulerManager = new SchedulerManager(logger);
         }
         
         public void ExecuteUserRequest(UserRequest request)
         {
-            var reply = Execute(request);
+            var reply = GetBotReplyOnUserRequest(request);
             OnReply(reply);
         }
 
-        public BotReply Execute(UserRequest request)
+        public BotReply GetBotReplyOnUserRequest(UserRequest request)
         {
             BotReply reply;
             switch (request.RequestType)
@@ -57,6 +60,24 @@ namespace App
                     throw new ArgumentOutOfRangeException();
             }
             return reply;
+        }
+
+        public void ExecuteSchedulerCommand(SchedulerCommand schedulerCommand)
+        {
+            var botReplies = GetBotRepliesOnSchedulerCommand(schedulerCommand);
+            foreach (var reply in botReplies)
+                OnReply(reply);
+            
+        }
+
+        private IEnumerable<BotReply> GetBotRepliesOnSchedulerCommand(SchedulerCommand schedulerCommand)
+        {
+            var result = schedulerCommand.CommandType switch
+            {
+                SchedulerCommandType.SendActualPricesForUser => schedulerManager.GetBotReplyTypes(userDB, stockManager),
+                _ => throw new NotImplementedException()
+            };
+            return result;
         }
     }
 }

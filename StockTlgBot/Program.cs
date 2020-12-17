@@ -23,9 +23,9 @@ namespace StockTlgBot
         
         static void Main(string[] args)
         {
-            const string botToken = "1355877173:AAEOcVr6dZGmjd5K7L2SrFNJXl2459nb4QE";
+            const string botToken = "1414575684:AAEEeTXtLniapL5c-bvEcIwFJVkbcTIoryI";
             var container = new StandardKernel();
-            container.Bind<IDataBase>().To<PostgreHandler>();
+            container.Bind<IDataBase>().To<SQLiteHandler>();
             container.Bind<IHttpClient>().To<HttpApiClient>();
             container.Bind<IInputParser>().To<InputParser>();
             container.Bind<IOutputRender>().To<OutputRender>();
@@ -41,6 +41,8 @@ namespace StockTlgBot
                 container.Get<IOutputRender>());
             
             AddAllEventHandlers();
+
+            var lol = new Scheduler(botLogic);
             
             telegramHandler.Initialize();
         }

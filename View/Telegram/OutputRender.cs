@@ -45,6 +45,9 @@ namespace View.Telegram
                 case BotReplyType.ImpossibleAction:
                     text = "Impossible Action";
                     break;
+                case BotReplyType.UserAlreadyRegister:
+                    text = "You are already register";
+                    break;
                 default:
                     throw new NotImplementedException();
             }
