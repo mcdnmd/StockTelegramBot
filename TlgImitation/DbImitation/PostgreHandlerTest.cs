@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Infrastructure;
 
@@ -27,6 +28,11 @@ namespace TlgImitation.DbImitation
             _dbContextTest.UserRecords.Remove(userRecord);
             await _dbContextTest.SaveChangesAsync();
             return userRecord;
+        }
+
+        public Task<List<UserRecord>> GetAllUsers()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

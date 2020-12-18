@@ -7,8 +7,8 @@ namespace App
 {
     public class Scheduler
     {
-        private Timer timer;
-        private BotLogic botLogic;
+        private readonly Timer timer;
+        private readonly BotLogic botLogic;
 
         public Scheduler(BotLogic botLogic)
         {

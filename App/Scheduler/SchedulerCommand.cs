@@ -2,7 +2,7 @@ namespace App
 {
     public class SchedulerCommand
     {
-        public SchedulerCommandType CommandType;
+        public SchedulerCommandType CommandType { get; }
 
         public SchedulerCommand(SchedulerCommandType schedulerCommandType)
         {

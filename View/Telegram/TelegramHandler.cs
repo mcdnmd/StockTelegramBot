@@ -9,9 +9,9 @@ namespace View.Telegram
 {
     public class TelegramHandler : IUserClient
     {
-        private ITelegramBotClient botClient;
-        private IInputParser inputParser;
-        private IOutputRender outputRender;
+        private readonly ITelegramBotClient botClient;
+        private readonly IInputParser inputParser;
+        private readonly IOutputRender outputRender;
 
         public Action<UserRequest> OnMessage { get; set; }
 
@@ -46,7 +46,7 @@ namespace View.Telegram
                 OnMessage(userRequest);
         }
 
-        public UserRequest ParseUserMessageText(TelegramUser telegramUser, string message)
+        private UserRequest ParseUserMessageText(TelegramUser telegramUser, string message)
         {
             var (userRequestType, parameters) = inputParser.ParseUserMessage(message);
             return new UserRequest(telegramUser, userRequestType, parameters);
@@ -66,10 +66,9 @@ namespace View.Telegram
         
         public async void SendReply(BotReply botReply, string text)
         {
-            ReplyKeyboardMarkup rkm;
             if (botReply.ReplyType == BotReplyType.RequestForChoseParser)
             {
-                rkm = new ReplyKeyboardMarkup {Keyboard = new[] {new KeyboardButton[] {"IEXCloud", "Finhub"}}};
+                var rkm = new ReplyKeyboardMarkup {Keyboard = new[] {new KeyboardButton[] {"IEXCloud", "Finhub"}}};
                 await botClient.SendTextMessageAsync(
                     chatId: botReply.User.Id, 
                     replyMarkup: rkm,

@@ -4,9 +4,9 @@ namespace App
 {
     public class UserRequest
     {
-        public IUser User;
-        public UserRequestType RequestType;
-        public Dictionary<string, List<string>> Parameters;
+        public IUser User { get; }
+        public UserRequestType RequestType { get; }
+        public Dictionary<string, List<string>> Parameters { get; }
 
         public UserRequest(IUser user, UserRequestType userRequestType, Dictionary<string, List<string>> parameters)
         {

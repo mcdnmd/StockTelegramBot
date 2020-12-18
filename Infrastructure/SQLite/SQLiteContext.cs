@@ -29,9 +29,9 @@ namespace Infrastructure
         
         
 
-        private string GetDBName(string fileName, string extension = "db")
+        private static string GetDBName(string fileName, string extension = "db")
         {
-            var path = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var path = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var catalogs = path.Split('\\');
             var dbName = new StringBuilder();
             foreach (var catalog in catalogs)

@@ -7,13 +7,13 @@ namespace App
 {
     public class BotLogic
     {
-        private IDataBase userDB;
+        private readonly IDataBase userDB;
 
-        private UserRegister userRegister;
-        private ChatStatusManager chatStatusManager;
-        private InputDataParser inputParserData;
-        private StockManager stockManager;
-        private SchedulerManager schedulerManager;
+        private readonly UserRegister userRegister;
+        private readonly ChatStatusManager chatStatusManager;
+        private readonly InputDataParser inputParserData;
+        private readonly StockManager stockManager;
+        private readonly SchedulerManager schedulerManager;
 
         public Action<BotReply> OnReply;
 
@@ -33,7 +33,7 @@ namespace App
             OnReply(reply);
         }
 
-        public BotReply GetBotReplyOnUserRequest(UserRequest request)
+        private BotReply GetBotReplyOnUserRequest(UserRequest request)
         {
             BotReply reply;
             switch (request.RequestType)
