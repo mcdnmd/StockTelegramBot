@@ -2,6 +2,7 @@ namespace App
 {
     public enum SchedulerCommandType
     {
-        SendActualPricesForUser
+        SendActualPricesForUser,
+        DailyDeleteAllUsers,
     }
 }

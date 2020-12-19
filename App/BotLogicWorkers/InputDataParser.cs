@@ -90,15 +90,17 @@ namespace App
         private BotReplyType EnterParserName(IDataBase database, UserRecord userRecord, List<string> parserNames)
         {
             var parserName = parserNames[0];
-            var botReplyType = BotReplyType.RequestForEnterParserPublicToken;
             userRecord.ChatStatus = ChatStatus.EnterParserPublicToken;
+            BotReplyType botReplyType;
             switch (parserName)
             {
                 case "IEXCloud":
                     userRecord.ParserName = ParserName.IEXCloud;
+                    botReplyType = BotReplyType.RequestForEnterParserPublicTokenIEXCloud;
                     break;
                 case "Finhub":
                     userRecord.ParserName = ParserName.Finnhub;
+                    botReplyType = BotReplyType.RequestForEnterParserPublicTokenFinhub;
                     break;
                 default:
                     logger.MakeLog($"InputDataParse: {userRecord.Id} chose unknown parser: {parserName}");

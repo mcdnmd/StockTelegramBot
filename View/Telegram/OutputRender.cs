@@ -22,8 +22,11 @@ namespace View.Telegram
                 case BotReplyType.RequestForChoseParser:
                     text = "Enter parser";
                     break;
-                case BotReplyType.RequestForEnterParserPublicToken:
-                    text = "Enter your public token";
+                case BotReplyType.RequestForEnterParserPublicTokenIEXCloud:
+                    text = "Sign in <a href=\"https://iexcloud.io/cloud-login?r=https%3A%2F%2Fiexcloud.io%2Fconsole%2F#/register\">link</a> and enter your public token";
+                    break;
+                case BotReplyType.RequestForEnterParserPublicTokenFinhub:
+                    text = "Sign in <a href=\"https://finnhub.io/register\">link</a> and enter your public token";
                     break;
                 case BotReplyType.RequestForEnterSymbol:
                     text = "Enter symbol";
@@ -53,7 +56,7 @@ namespace View.Telegram
                     text = "You have already signed in";
                     break;
                 case BotReplyType.UserNotRegistered:
-                    text = "Before using StocksWallet sign in using /signin";
+                    text = "Before using <b>StocksWallet</b> sign in using /signin";
                     break;
                 case BotReplyType.EmptySymbolSubscriptions:
                     text = "You don`t have any symbols in the library. Use /addsymbol";

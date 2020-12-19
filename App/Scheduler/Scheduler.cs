@@ -13,7 +13,7 @@ namespace App
         public Scheduler(BotLogic botLogic)
         {
             this.botLogic = botLogic;
-            timer = new Timer {Interval = 60 * 1000};
+            timer = new Timer {Interval = 10 * 60 * 1000};
             timer.Elapsed += OnElapsed;
             timer.Enabled = true;
         }

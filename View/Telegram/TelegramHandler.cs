@@ -85,7 +85,8 @@ namespace View.Telegram
             await botClient.SendTextMessageAsync(
                 chatId: id, 
                 replyMarkup: new ReplyKeyboardRemove(),
-                text: text);
+                text: text,
+                parseMode: ParseMode.Html);
         }
 
         private async void SendTelegramReplyWithMarkup(long id, ReplyKeyboardMarkup rkm, string text)
@@ -93,7 +94,8 @@ namespace View.Telegram
             await botClient.SendTextMessageAsync(
                 chatId: id, 
                 replyMarkup: rkm,
-                text: text);
+                text: text,
+                parseMode: ParseMode.Html);
         }
     }
 }

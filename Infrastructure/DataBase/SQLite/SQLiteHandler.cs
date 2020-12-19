@@ -18,7 +18,7 @@ namespace Infrastructure.DataBase
             return (!ReferenceEquals(record, null) ? DataToUser(record[0]) : null);
         }
 
-        public  Task<UserRecord> AddNewUser(UserRecord userRecord)
+        public Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
             var subscriptions = string.Join(';', userRecord.Subscriptions.ToArray());
             if (subscriptions.Length > 0 && subscriptions[0] == ';')
