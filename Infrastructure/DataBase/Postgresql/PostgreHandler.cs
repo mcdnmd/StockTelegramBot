@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure.DataBase;
 
-namespace Infrastructure
+
+namespace Infrastructure.DataBase
 {
     public class PostgreHandler : IDataBase
     {
@@ -37,9 +38,9 @@ namespace Infrastructure
             return userRecord;
         }
 
-        public Task<List<UserRecord>> GetAllUsers()
+        public async Task<List<UserRecord>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return dbContext.UserRecords.ToList();
         }
     }
 }

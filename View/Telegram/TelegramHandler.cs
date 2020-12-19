@@ -27,11 +27,9 @@ namespace View.Telegram
             botClient.OnMessage += OnMessageHandler;
             botClient.StartReceiving();
             
-            // Debug mode START
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
-            // Debug mode END
-            
+
             botClient.StopReceiving();
         }
 
@@ -45,11 +43,16 @@ namespace View.Telegram
             else
                 OnMessage(userRequest);
         }
+        
+        public void BotOnReply(BotReply botReply)
+        {
+            SendReply(botReply, outputRender.RenderReply(botReply.ReplyType));
+        }
 
-        private UserRequest ParseUserMessageText(TelegramUser telegramUser, string message)
+        private UserRequest ParseUserMessageText(IUser user, string message)
         {
             var (userRequestType, parameters) = inputParser.ParseUserMessage(message);
-            return new UserRequest(telegramUser, userRequestType, parameters);
+            return new UserRequest(user, userRequestType, parameters);
         }
         
         private void HandleUnknownCommand(UserRequest userRequest)
@@ -58,36 +61,39 @@ namespace View.Telegram
                 new BotReply(userRequest.User, BotReplyType.UnknownCommand, null), 
                 $"Unknown command {userRequest.Parameters["data"][0]}");
         }
-        
-        public void BotOnReply(BotReply botReply)
+
+        public void SendReply(BotReply botReply, string text)
         {
-            SendReply(botReply, outputRender.RenderReply(botReply.ReplyType));
-        }
-        
-        public async void SendReply(BotReply botReply, string text)
-        {
-            if (botReply.ReplyType == BotReplyType.RequestForChoseParser)
+            if (botReply.ReplyType == BotReplyType.RequestForChoseParser || botReply.ReplyType == BotReplyType.UnknownParser)
             {
                 var rkm = new ReplyKeyboardMarkup {Keyboard = new[] {new KeyboardButton[] {"IEXCloud", "Finhub"}}};
-                await botClient.SendTextMessageAsync(
-                    chatId: botReply.User.Id, 
-                    replyMarkup: rkm,
-                    text: text);
+                SendTelegramReplyWithMarkup(botReply.User.Id, rkm, text);
             }
             else if (!ReferenceEquals(botReply.SymbolParameters, null) && botReply.SymbolParameters.ContainsKey("text"))
             {
                 text = outputRender.CreateSymbolsInfo(botReply.SymbolParameters["text"]);
-                await botClient.SendTextMessageAsync(
-                    chatId: botReply.User.Id,
-                    text: text);
+                SendTelegramReplyWithoutMarkup(botReply.User.Id, text);
             }
             else
             {
-                await botClient.SendTextMessageAsync(
-                    chatId: botReply.User.Id, 
-                    replyMarkup: new ReplyKeyboardRemove(),
-                    text: text);
+                SendTelegramReplyWithoutMarkup(botReply.User.Id, text);
             }
+        }
+
+        private async void SendTelegramReplyWithoutMarkup(long id, string text)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: id, 
+                replyMarkup: new ReplyKeyboardRemove(),
+                text: text);
+        }
+
+        private async void SendTelegramReplyWithMarkup(long id, ReplyKeyboardMarkup rkm, string text)
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: id, 
+                replyMarkup: rkm,
+                text: text);
         }
     }
 }

@@ -12,8 +12,12 @@ namespace View.Telegram
             var text = "SUPERMAN!";
             switch (botReplyType)
             {
-                case BotReplyType.Start:
-                    text = "Hi, I`m a stock parser!";
+                case BotReplyType.Help:
+                    text = "You can control the bot by sending these commands:\n\n" +
+                           "/signin - sign in\n" +
+                           "/addsymbol - add new symbol(s) to your library\n" +
+                           "/removesymbol - remove symbol(s) from the library\n" +
+                           "/getprices - get your symbols` current prices";
                     break;
                 case BotReplyType.RequestForChoseParser:
                     text = "Enter parser";
@@ -32,21 +36,27 @@ namespace View.Telegram
                     text = "You enter unknown parser";
                     break;
                 case BotReplyType.SuccessfullyRemoveSymbol:
-                    text = "You successfully remove symbol";
+                    text = "You successfully removed symbol";
                     break;
                 case BotReplyType.SuccessfullyAddSymbol:
-                    text = "You successfully add symbol";
+                    text = "You successfully added symbol";
                     break;
                 case BotReplyType.SuccessfullyEnterToken:
-                    text = "You successfully enter token";
+                    text = "You successfully entered token";
                     break;
                 case BotReplyType.UnknownCommand:
                     break;
                 case BotReplyType.ImpossibleAction:
-                    text = "Impossible Action";
+                    text = "Incorrect command";
                     break;
                 case BotReplyType.UserAlreadyRegister:
-                    text = "You are already register";
+                    text = "You have already signed in";
+                    break;
+                case BotReplyType.UserNotRegistered:
+                    text = "Before using StocksWallet sign in using /signin";
+                    break;
+                case BotReplyType.EmptySymbolSubscriptions:
+                    text = "You don`t have any symbols in the library. Use /addsymbol";
                     break;
                 default:
                     throw new NotImplementedException();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using App.Logger;
 using Infrastructure;
+using Infrastructure.DataBase;
 
 namespace App
 {
@@ -16,13 +17,23 @@ namespace App
         
         public BotReply ParseData(IDataBase database, UserRequest userRequest)
         {
-            logger.MakeLog(userRequest.User.Id + " " + userRequest.Parameters["data"][0]);
             
-            var userRecord = database.FindUser(userRequest.User.Id).Result;
+            UserRecord userRecord;
+            try
+            {
+                userRecord = database.FindUser(userRequest.User.Id).Result;
+            }
+            catch (Exception)
+            {
+                //{userRequest.User.Id} made impossible action {userRequest.Parameters["data"][0]}
+                logger.MakeLog($"InputDataParse: {userRequest.User.Id} not found in DB");
+                return new BotReply(userRequest.User, BotReplyType.UserNotRegistered, null);
+            }
             if (ReferenceEquals(userRecord, null))
-                return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
-            
-            logger.MakeLog(userRecord.ChatStatus.ToString());
+            {
+                logger.MakeLog($"InputDataParse: {userRequest.User.Id} not found in DB");
+                return new BotReply(userRequest.User, BotReplyType.UserNotRegistered, null);
+            }
             
             BotReplyType type;
             switch (userRecord.ChatStatus)
@@ -53,6 +64,7 @@ namespace App
                 userRecord.Subscriptions.Remove(symbol);
             userRecord.ChatStatus = ChatStatus.None;
             database.UpdateUser(userRecord);
+            logger.MakeLog($"InputDataParse: {userRecord.Id} successfully remove symbol");
             return BotReplyType.SuccessfullyRemoveSymbol;
         }
 
@@ -62,6 +74,7 @@ namespace App
                 userRecord.Subscriptions.Add(symbol);
             userRecord.ChatStatus = ChatStatus.None; 
             database.UpdateUser(userRecord);
+            logger.MakeLog($"InputDataParse: {userRecord.Id} successfully add symbol");
             return BotReplyType.SuccessfullyAddSymbol;
         }
 
@@ -70,6 +83,7 @@ namespace App
             userRecord.ParserToken = publicToken[0];
             userRecord.ChatStatus = ChatStatus.None;
             database.UpdateUser(userRecord);
+            logger.MakeLog($"InputDataParse: {userRecord.Id} successfully enter public token");
             return BotReplyType.SuccessfullyEnterToken;
         }
 
@@ -87,10 +101,10 @@ namespace App
                     userRecord.ParserName = ParserName.Finnhub;
                     break;
                 default:
-                    botReplyType = BotReplyType.UnknownParser;
-                    userRecord.ChatStatus = ChatStatus.ChoseParser;
-                    break;
+                    logger.MakeLog($"InputDataParse: {userRecord.Id} chose unknown parser: {parserName}");
+                    return BotReplyType.UnknownParser;
             }
+            logger.MakeLog($"InputDataParse: {userRecord.Id} successfully chose parser: {parserName}");
             database.UpdateUser(userRecord);
             return botReplyType;
         }

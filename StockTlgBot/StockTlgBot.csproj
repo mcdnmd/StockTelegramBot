@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Include="bin\Debug\netcoreapp3.1\settings.json" />
       <None Include="bin\Debug\netcoreapp3.1\users.db" />
     </ItemGroup>
 

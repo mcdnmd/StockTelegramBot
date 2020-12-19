@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
+using Infrastructure.DataBase;
 
-namespace Infrastructure
+namespace Infrastructure.DataBase
 {
     public class SQLiteHandler : IDataBase
     {
@@ -15,10 +15,10 @@ namespace Infrastructure
             var result = _context.SendSQL($"SELECT Id, ChatStatus, Subscriptions, ParserName, " +
                                           $"ParserToken FROM Users WHERE Id={id};");
             var record = result.Result;
-            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
+            return (!ReferenceEquals(record, null) ? DataToUser(record[0]) : null);
         }
 
-        public Task<UserRecord> AddNewUser(UserRecord userRecord)
+        public  Task<UserRecord> AddNewUser(UserRecord userRecord)
         {
             var subscriptions = string.Join(';', userRecord.Subscriptions.ToArray());
             if (subscriptions.Length > 0 && subscriptions[0] == ';')
@@ -27,7 +27,7 @@ namespace Infrastructure
                                           $"ParserToken) VALUES ({userRecord.Id}, {(int) userRecord.ChatStatus}, " +
                                           $"'{subscriptions}', {(int) userRecord.ParserName}, '{userRecord.ParserToken}');");
             var record = result.Result;
-            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
+            return (!ReferenceEquals(record, null) ? DataToUser(record[0]) : null);
         }
 
         public Task<UserRecord> UpdateUser(UserRecord userRecord)
@@ -39,7 +39,7 @@ namespace Infrastructure
                                           $"Subscriptions = '{subscriptions}', ParserName = {(int) userRecord.ParserName}," +
                                           $"ParserToken = '{userRecord.ParserToken}' WHERE Id = {userRecord.Id}");
             var record = result.Result;
-            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
+            return (!ReferenceEquals(record, null) ? DataToUser(record[0]) : null);
         }
 
         public Task<UserRecord> RemoveUser(UserRecord userRecord)
@@ -47,7 +47,7 @@ namespace Infrastructure
             var result = _context.SendSQL($"DELETE FROM Users WHERE Id = {userRecord.Id}");
 
             var record = result.Result;
-            return !ReferenceEquals(record, null) ? DataToUser(record[0]) : null;
+            return (!ReferenceEquals(record, null) ? DataToUser(record[0]) : null);
         }
 
         public async Task<List<UserRecord>> GetAllUsers()

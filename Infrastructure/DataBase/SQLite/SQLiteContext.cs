@@ -8,13 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
-namespace Infrastructure
+namespace Infrastructure.DataBase
 {
     public class SQLiteContext
     {
         public async Task<List<DbDataRecord>> SendSQL(string sql)
-        {
-            Console.WriteLine(GetDBName("users"));
+        { 
             var connection = new SqliteConnection($"Data Source={GetDBName("users")}");
             connection.Open();
             var command = new SqliteCommand(sql, connection);

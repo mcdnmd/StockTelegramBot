@@ -2,14 +2,16 @@ namespace App
 {
     public enum BotReplyType
     {
-        Start,
+        Help,
         ImpossibleAction,
         UserAlreadyRegister,
+        UserNotRegistered,
         UnknownCommand,
         RequestForChoseParser,
         UnknownParser,
         RequestForEnterParserPublicToken,
         RequestForEnterSymbol,
+        EmptySymbolSubscriptions,
         SingleSymbolInfo,
         MultipleSymbolInfo,
         SuccessfullyRemoveSymbol,

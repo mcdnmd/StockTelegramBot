@@ -6,11 +6,9 @@ namespace App
         UnknownCommand,
         Start,
         Register,
-        UnRegister,
         UpdateUserInfo,
         SubscribeForSymbol,
         UnSubscribeForSymbol,
-        UpdateUserInterfaceInfo,
         InputRawData,
         GetAllSymbolPrices
     }

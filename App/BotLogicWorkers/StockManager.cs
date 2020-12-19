@@ -5,6 +5,7 @@ using App.Exceptions;
 using App.Logger;
 using App.PublicParserAPI;
 using Infrastructure;
+using Infrastructure.DataBase;
 
 namespace App
 {
@@ -20,9 +21,29 @@ namespace App
         
         public BotReply GetAllPrices(IDataBase database, UserRequest userRequest)
         {
-            var userRecord = database.FindUser(userRequest.User.Id).Result;
-            if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus != ChatStatus.None)
+            UserRecord userRecord;
+            try
+            {
+                userRecord = database.FindUser(userRequest.User.Id).Result;
+            }
+            catch (Exception)
+            {
+                logger.MakeLog($"StockManager: {userRequest.User.Id} not found in DB");
+                return new BotReply(userRequest.User, BotReplyType.UserNotRegistered, null);
+            }
+            
+            if (ReferenceEquals(userRecord, null))
+            {
+                logger.MakeLog($"StockManager: {userRequest.User.Id} not found in DB");
+                return new BotReply(userRequest.User, BotReplyType.UserNotRegistered, null);
+            }
+            
+            if (userRecord.ChatStatus != ChatStatus.None)
+            {
+                logger.MakeLog($"StockManager: {userRequest.User.Id} try to get prices with status {userRecord.ChatStatus}");
                 return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
+            }
+
             Dictionary<string, Dictionary<string, string>> symbolParameters;
             try
             {
@@ -30,9 +51,10 @@ namespace App
             }
             catch (EmptySymbolSubscriptionsException e)
             {
-                logger.MakeLog(e.ToString());
-                return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
+                logger.MakeLog($"StockManager: {e}");
+                return new BotReply(userRequest.User, BotReplyType.EmptySymbolSubscriptions, null);
             }
+            logger.MakeLog($"StockManager: {userRequest.User.Id} successfully get prices");
             return new BotReply(userRequest.User, BotReplyType.MultipleSymbolInfo, symbolParameters);
         }
 
@@ -56,7 +78,7 @@ namespace App
         private Dictionary<string, Dictionary<string, string>> GetSymbolParameters(UserRecord userRecord)
         {
             var symbols = userRecord.Subscriptions;
-            if (ReferenceEquals(symbols, null))
+            if (ReferenceEquals(symbols, null) || symbols.Count == 0 || symbols[0] == "")
                 throw new EmptySymbolSubscriptionsException();
             var parser = GetApiParser(userRecord.ParserName);
             var token = userRecord.ParserToken;

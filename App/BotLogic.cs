@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using App.Logger;
 using Infrastructure;
+using Infrastructure.DataBase;
 
 namespace App
 {
@@ -39,7 +40,7 @@ namespace App
             switch (request.RequestType)
             {
                 case UserRequestType.Start:
-                    reply = new BotReply(request.User, BotReplyType.Start, null);
+                    reply = new BotReply(request.User, BotReplyType.Help, null);
                     break;
                 case UserRequestType.Register:
                     reply = userRegister.Register(userDB, request.User);
@@ -57,7 +58,7 @@ namespace App
                     reply = stockManager.GetAllPrices(userDB, request);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new NotImplementedException();
             }
             return reply;
         }

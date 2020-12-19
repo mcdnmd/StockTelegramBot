@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using App.Logger;
 using Infrastructure;
+using Infrastructure.DataBase;
 
 namespace App
 {
@@ -15,21 +16,21 @@ namespace App
         
         public BotReply Register(IDataBase database, IUser user)
         {
-            var userRecord = new UserRecord{
-                Id = user.Id, 
-                ChatStatus = ChatStatus.ChoseParser,
-                Subscriptions = new List<string>(),
-                ParserName =  ParserName.None,
-                ParserToken = default,
-
-            };
             if (ReferenceEquals(database.FindUser(user.Id), null))
             {
+                var userRecord = new UserRecord{
+                    Id = user.Id, 
+                    ChatStatus = ChatStatus.ChoseParser,
+                    Subscriptions = new List<string>(),
+                    ParserName =  ParserName.None,
+                    ParserToken = default,
+
+                };
                 database.AddNewUser(userRecord);
-                logger.MakeLog($"Register new user: {user.Id}");
+                logger.MakeLog($"UserRegister: register new user: {user.Id}");
                 return new BotReply(user, BotReplyType.RequestForChoseParser, null);
             }
-            logger.MakeLog($"User {user.Id} already exists");
+            logger.MakeLog($"UserRegister: {user.Id} already exists");
             return new BotReply(user, BotReplyType.UserAlreadyRegister, null);
         }
     }

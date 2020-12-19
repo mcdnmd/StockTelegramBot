@@ -21,10 +21,12 @@ namespace App
             if (ReferenceEquals(httpResponse, null))
                 return null;
             var http = JsonConvert.DeserializeObject<Dictionary<string, string>>(httpResponse);
+
+            var currentPrice = http["iexRealtimePrice"] ?? http["latestPrice"];
             var result = new ParserReply
             {
                 Symbol = symbol, 
-                CurrentPrice = http["latestPrice"]
+                CurrentPrice = currentPrice
             };
             return result;
         }

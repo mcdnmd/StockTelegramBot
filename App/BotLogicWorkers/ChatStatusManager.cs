@@ -1,6 +1,8 @@
 using System;
 using App.Logger;
 using Infrastructure;
+using Infrastructure.DataBase;
+
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace App
@@ -16,10 +18,28 @@ namespace App
         
         public BotReply ChangeCurrentChatStatus(IDataBase database, IUser user, ChatStatus chatStatus)
         {
-            var userRecord = database.FindUser(user.Id).Result;
-            logger.MakeLog(userRecord.ChatStatus.ToString());
-            if (ReferenceEquals(userRecord, null) || userRecord.ChatStatus != ChatStatus.None)
-                return new BotReply(user, BotReplyType.ImpossibleAction, null);
+            
+            UserRecord userRecord;
+            try
+            {
+                userRecord = database.FindUser(user.Id).Result;
+            }
+            catch (Exception)
+            {
+                logger.MakeLog($"ChatStatusManager: {user.Id} not found in DB");
+                return new BotReply(user, BotReplyType.UserNotRegistered, null);
+            }
+            if (ReferenceEquals(userRecord, null))
+            {
+                logger.MakeLog($"ChatStatusManager: {user.Id} not found in DB");
+                return new BotReply(user, BotReplyType.UserNotRegistered, null);
+            }
+            if (userRecord.ChatStatus != ChatStatus.None)
+            {
+                logger.MakeLog($"ChatStatusManager: {user.Id} try to change {userRecord.ChatStatus} to {chatStatus}");
+                return new BotReply(user, BotReplyType.ImpossibleAction, null); 
+            }
+            logger.MakeLog($"ChatStatusManager: {user.Id} successfully change {userRecord.ChatStatus} to {chatStatus}");
             userRecord.ChatStatus = chatStatus;
             database.UpdateUser(userRecord);
             return new BotReply(user, GetBotReplyType(chatStatus), null);

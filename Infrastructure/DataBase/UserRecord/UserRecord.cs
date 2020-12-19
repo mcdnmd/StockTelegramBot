@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Infrastructure
+namespace Infrastructure.DataBase
 {
     public class UserRecord
     {

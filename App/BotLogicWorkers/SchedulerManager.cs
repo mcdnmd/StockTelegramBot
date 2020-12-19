@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using App.Exceptions;
 using App.Logger;
 using Infrastructure;
+using Infrastructure.DataBase;
 
 namespace App
 {

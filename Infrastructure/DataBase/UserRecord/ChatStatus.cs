@@ -1,4 +1,4 @@
-namespace Infrastructure
+namespace Infrastructure.DataBase
 {
     public enum ChatStatus
     {
