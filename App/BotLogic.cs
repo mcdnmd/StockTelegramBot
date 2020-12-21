@@ -8,24 +8,21 @@ namespace App
 {
     public class BotLogic
     {
-        private readonly IDataBase userDB;
-
         private readonly UserRegister userRegister;
         private readonly ChatStatusManager chatStatusManager;
-        private readonly InputDataParser inputParserData;
+        private readonly InputDataParser inputDataParser;
         private readonly StockManager stockManager;
         private readonly SchedulerManager schedulerManager;
 
         public Action<BotReply> OnReply;
 
-        public BotLogic(IDataBase userDb, ILogger logger)
+        public BotLogic(UserRegister userRegister, ChatStatusManager chatStatusManager, InputDataParser inputDataParser, StockManager stockManager, SchedulerManager schedulerManager)
         {
-            userDB = userDb;
-            userRegister = new UserRegister(logger);
-            chatStatusManager = new ChatStatusManager(logger);
-            inputParserData = new InputDataParser(logger);
-            stockManager = new StockManager(logger);
-            schedulerManager = new SchedulerManager(logger);
+            this.userRegister = userRegister;
+            this.chatStatusManager = chatStatusManager;
+            this.inputDataParser = inputDataParser;
+            this.stockManager = stockManager;
+            this.schedulerManager = schedulerManager;
         }
         
         public void ExecuteUserRequest(UserRequest request)
@@ -43,19 +40,19 @@ namespace App
                     reply = new BotReply(request.User, BotReplyType.Help, null);
                     break;
                 case UserRequestType.Register:
-                    reply = userRegister.Register(userDB, request.User);
+                    reply = userRegister.Register(request.User);
                     break;
                 case UserRequestType.SubscribeForSymbol:
-                    reply = chatStatusManager.ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToAddNewSubscription);
+                    reply = chatStatusManager.ChangeCurrentChatStatus(request.User, ChatStatus.EnterSymbolToAddNewSubscription);
                     break;
                 case UserRequestType.UnSubscribeForSymbol:
-                    reply = chatStatusManager.ChangeCurrentChatStatus(userDB, request.User, ChatStatus.EnterSymbolToRemoveSubscription);
+                    reply = chatStatusManager.ChangeCurrentChatStatus(request.User, ChatStatus.EnterSymbolToRemoveSubscription);
                     break;
                 case UserRequestType.InputRawData:
-                    reply = inputParserData.ParseData(userDB, request);
+                    reply = inputDataParser.ParseData(request);
                     break;
                 case UserRequestType.GetAllSymbolPrices:
-                    reply = stockManager.GetAllPrices(userDB, request);
+                    reply = stockManager.GetAllPrices(request);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -75,7 +72,7 @@ namespace App
         {
             var result = schedulerCommand.CommandType switch
             {
-                SchedulerCommandType.SendActualPricesForUser => schedulerManager.GetBotReplyTypes(userDB, stockManager),
+                SchedulerCommandType.SendActualPricesForUser => schedulerManager.GetBotReplyTypes(stockManager),
                 _ => throw new NotImplementedException()
             };
             return result;

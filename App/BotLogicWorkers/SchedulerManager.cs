@@ -10,15 +10,17 @@ namespace App
     public class SchedulerManager
     {
         private ILogger logger;
+        private readonly IDataBase database;
 
-        public SchedulerManager(ILogger logger)
+        public SchedulerManager(IDataBase database, ILogger logger)
         {
+            this.database = database;
             this.logger = logger;
         }
         
-        public List<BotReply> GetBotReplyTypes(IDataBase dataBase, StockManager stockManager)
+        public List<BotReply> GetBotReplyTypes(StockManager stockManager)
         {
-            var usersRecords = dataBase.GetAllUsers().Result;
+            var usersRecords = database.GetAllUsers().Result;
             var result = new List<BotReply>();
             foreach (var userRecord in usersRecords)
             {

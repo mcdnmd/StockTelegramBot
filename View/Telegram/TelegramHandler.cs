@@ -26,10 +26,10 @@ namespace View.Telegram
         {
             botClient.OnMessage += OnMessageHandler;
             botClient.StartReceiving();
-            
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
+        }
 
+        public void StopReciving()
+        {
             botClient.StopReceiving();
         }
 

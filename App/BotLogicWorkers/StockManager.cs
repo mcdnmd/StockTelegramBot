@@ -13,13 +13,15 @@ namespace App
     {
         
         private ILogger logger;
-
-        public StockManager(ILogger logger)
+        private readonly IDataBase database;
+        
+        public StockManager(IDataBase database, ILogger logger)
         {
+            this.database = database;
             this.logger = logger;
         }
         
-        public BotReply GetAllPrices(IDataBase database, UserRequest userRequest)
+        public BotReply GetAllPrices(UserRequest userRequest)
         {
             UserRecord userRecord;
             try

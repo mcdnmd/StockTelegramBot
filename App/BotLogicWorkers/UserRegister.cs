@@ -8,15 +8,17 @@ namespace App
     public class UserRegister
     {
         private ILogger logger;
+        private readonly IDataBase database;
 
-        public UserRegister(ILogger logger)
+        public UserRegister(IDataBase database, ILogger logger)
         {
+            this.database = database;
             this.logger = logger;
         }
         
-        public BotReply Register(IDataBase database, IUser user)
+        public BotReply Register(IUser user)
         {
-            if (ReferenceEquals(database.FindUser(user.Id), null))
+            if (ReferenceEquals(database.FindUser(user.Id).Result, null))
             {
                 var userRecord = new UserRecord{
                     Id = user.Id, 

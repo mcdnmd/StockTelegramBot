@@ -22,7 +22,6 @@ namespace Infrastructure.DataBase
             connection.Close();
             if (result.Count > 0)
                 return result;
-            connection.Close();
             return null;
         }
         

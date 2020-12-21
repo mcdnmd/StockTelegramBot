@@ -7,13 +7,16 @@ namespace App
 {
     public class Scheduler
     {
-        private readonly Timer timer;
+        private readonly Timer timer = new Timer {Interval = 10 * 60 * 1000};
         private readonly BotLogic botLogic;
 
         public Scheduler(BotLogic botLogic)
         {
             this.botLogic = botLogic;
-            timer = new Timer {Interval = 10 * 60 * 1000};
+        }
+
+        public void Run()
+        {
             timer.Elapsed += OnElapsed;
             timer.Enabled = true;
         }

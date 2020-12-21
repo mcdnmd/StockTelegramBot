@@ -10,13 +10,15 @@ namespace App
     public class ChatStatusManager
     {
         private ILogger logger;
+        private readonly IDataBase database;
 
-        public ChatStatusManager(ILogger logger)
+        public ChatStatusManager(IDataBase database, ILogger logger)
         {
+            this.database = database;
             this.logger = logger;
         }
         
-        public BotReply ChangeCurrentChatStatus(IDataBase database, IUser user, ChatStatus chatStatus)
+        public BotReply ChangeCurrentChatStatus(IUser user, ChatStatus chatStatus)
         {
             
             UserRecord userRecord;

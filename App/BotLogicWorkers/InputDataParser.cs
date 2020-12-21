@@ -9,13 +9,15 @@ namespace App
     public class InputDataParser
     {
         private ILogger logger;
+        private readonly IDataBase database;
 
-        public InputDataParser(ILogger logger)
+        public InputDataParser(IDataBase database, ILogger logger)
         {
+            this.database = database;
             this.logger = logger;
         }
         
-        public BotReply ParseData(IDataBase database, UserRequest userRequest)
+        public BotReply ParseData(UserRequest userRequest)
         {
             
             UserRecord userRecord;
@@ -39,16 +41,16 @@ namespace App
             switch (userRecord.ChatStatus)
             {
                 case ChatStatus.ChoseParser:
-                    type = EnterParserName(database, userRecord, userRequest.Parameters["data"]);
+                    type = EnterParserName(userRecord, userRequest.Parameters["data"]);
                     break;
                 case ChatStatus.EnterParserPublicToken:
-                    type = EnterPublicToken(database, userRecord, userRequest.Parameters["data"]);
+                    type = EnterPublicToken(userRecord, userRequest.Parameters["data"]);
                     break;
                 case ChatStatus.EnterSymbolToAddNewSubscription:
-                    type = EnterSymbolToAdd(database, userRecord, userRequest.Parameters["data"]);
+                    type = EnterSymbolToAdd(userRecord, userRequest.Parameters["data"]);
                     break;
                 case ChatStatus.EnterSymbolToRemoveSubscription:
-                    type = EnterSymbolToRemove(database, userRecord, userRequest.Parameters["data"]);
+                    type = EnterSymbolToRemove(userRecord, userRequest.Parameters["data"]);
                     break;
                 case ChatStatus.None:
                     return new BotReply(userRequest.User, BotReplyType.ImpossibleAction, null);
@@ -58,7 +60,7 @@ namespace App
             return new BotReply(userRequest.User, type, null);
         }
 
-        private BotReplyType EnterSymbolToRemove(IDataBase database, UserRecord userRecord, List<string> symbols)
+        private BotReplyType EnterSymbolToRemove(UserRecord userRecord, List<string> symbols)
         {
             foreach (var symbol in symbols)
                 userRecord.Subscriptions.Remove(symbol);
@@ -68,7 +70,7 @@ namespace App
             return BotReplyType.SuccessfullyRemoveSymbol;
         }
 
-        private BotReplyType EnterSymbolToAdd(IDataBase database, UserRecord userRecord, List<string> symbols)
+        private BotReplyType EnterSymbolToAdd(UserRecord userRecord, List<string> symbols)
         {
             foreach (var symbol in symbols)
                 userRecord.Subscriptions.Add(symbol);
@@ -78,7 +80,7 @@ namespace App
             return BotReplyType.SuccessfullyAddSymbol;
         }
 
-        private BotReplyType EnterPublicToken(IDataBase database, UserRecord userRecord, List<string> publicToken)
+        private BotReplyType EnterPublicToken(UserRecord userRecord, List<string> publicToken)
         {
             userRecord.ParserToken = publicToken[0];
             userRecord.ChatStatus = ChatStatus.None;
@@ -87,7 +89,7 @@ namespace App
             return BotReplyType.SuccessfullyEnterToken;
         }
 
-        private BotReplyType EnterParserName(IDataBase database, UserRecord userRecord, List<string> parserNames)
+        private BotReplyType EnterParserName(UserRecord userRecord, List<string> parserNames)
         {
             var parserName = parserNames[0];
             userRecord.ChatStatus = ChatStatus.EnterParserPublicToken;
