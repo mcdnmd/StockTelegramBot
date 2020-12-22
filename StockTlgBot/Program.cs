@@ -23,29 +23,31 @@ namespace StockTlgBot
         static void Main()
         {
             var settings = LoadSettings();
-            container.Bind<IDataBase>().To<PostgreHandler>();
-            container.Bind<IHttpClient>().To<HttpApiClient>();
-            container.Bind<IInputParser>().To<InputParser>();
-            container.Bind<IOutputRender>().To<OutputRender>();
-            container.Bind<ILogger>().To<ConsoleLogger>();
-            container.Bind<UserRegister>().To<UserRegister>();
-            container.Bind<ChatStatusManager>().To<ChatStatusManager>();
-            container.Bind<InputDataParser>().To<InputDataParser>();
-            container.Bind<StockManager>().To<StockManager>();
-            container.Bind<SchedulerManager>().To<SchedulerManager>();
-            container.Bind<BotLogic>().To<BotLogic>();
-
+            if (settings.DataBaseType.Equals("PostgreHandler"))
+                container.Bind<IDataBase>().To<PostgreHandler>().InSingletonScope();
+            else 
+                container.Bind<IDataBase>().To<SQLiteHandler>().InSingletonScope();
+            container.Bind<IHttpClient>().To<HttpApiClient>().InSingletonScope();
+            container.Bind<IInputParser>().To<InputParser>().InSingletonScope();
+            container.Bind<IOutputRender>().To<OutputRender>().InSingletonScope();
+            container.Bind<ILogger>().To<ConsoleLogger>().InSingletonScope();
+            container.Bind<UserRegister>().To<UserRegister>().InSingletonScope();
+            container.Bind<ChatStatusManager>().To<ChatStatusManager>().InSingletonScope();
+            container.Bind<InputDataParser>().To<InputDataParser>().InSingletonScope();
+            container.Bind<StockManager>().To<StockManager>().InSingletonScope();
+            container.Bind<SchedulerManager>().To<SchedulerManager>().InSingletonScope();
+            container.Bind<BotLogic>().To<BotLogic>().InSingletonScope();
+            container.Bind<Scheduler>().To<Scheduler>().InSingletonScope();
+            
             botClient = new TelegramBotClient(settings.TelegramBotToken);
             
             telegramHandler = new TelegramHandler(
                 botClient, 
                 container.Get<IInputParser>(), 
                 container.Get<IOutputRender>());
-            
+
             AddAllEventHandlers();
-            
-            container.Bind<Scheduler>().To<Scheduler>();
-            
+
             telegramHandler.Initialize();
             
             container.Get<Scheduler>().Run(1);
@@ -71,7 +73,7 @@ namespace StockTlgBot
         private class Settings
         {
             public string TelegramBotToken;
-            public string PostgreSettings;
+            public string DataBaseType;
         }
     }
 }
