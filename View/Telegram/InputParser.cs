@@ -15,6 +15,9 @@ namespace View.Telegram
                 case "/start":
                     userRequestType = UserRequestType.Start;
                     break;
+                case "/help":
+                    userRequestType = UserRequestType.Help;
+                    break;
                 case "/signin":
                     userRequestType = UserRequestType.Register;
                     break;

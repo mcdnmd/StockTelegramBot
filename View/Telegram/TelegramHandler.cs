@@ -82,20 +82,34 @@ namespace View.Telegram
 
         private async void SendTelegramReplyWithoutMarkup(long id, string text)
         {
-            await botClient.SendTextMessageAsync(
-                chatId: id, 
-                replyMarkup: new ReplyKeyboardRemove(),
-                text: text,
-                parseMode: ParseMode.Html);
+            try
+            {
+                await botClient.SendTextMessageAsync(
+                    chatId: id, 
+                    replyMarkup: new ReplyKeyboardRemove(),
+                    text: text,
+                    parseMode: ParseMode.Html);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"TelegramHandler: occurred exception: {e}");
+            }
         }
 
-        private async void SendTelegramReplyWithMarkup(long id, ReplyKeyboardMarkup rkm, string text)
+        private async void SendTelegramReplyWithMarkup(long id, IReplyMarkup rkm, string text)
         {
-            await botClient.SendTextMessageAsync(
-                chatId: id, 
-                replyMarkup: rkm,
-                text: text,
-                parseMode: ParseMode.Html);
+            try
+            {
+                await botClient.SendTextMessageAsync(
+                    chatId: id, 
+                    replyMarkup: rkm,
+                    text: text,
+                    parseMode: ParseMode.Html);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"TelegramHandler: occurred exception: {e}");
+            }
         }
     }
 }

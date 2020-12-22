@@ -23,7 +23,7 @@ namespace StockTlgBot
         static void Main()
         {
             var settings = LoadSettings();
-            container.Bind<IDataBase>().To<SQLiteHandler>();
+            container.Bind<IDataBase>().To<PostgreHandler>();
             container.Bind<IHttpClient>().To<HttpApiClient>();
             container.Bind<IInputParser>().To<InputParser>();
             container.Bind<IOutputRender>().To<OutputRender>();
@@ -33,7 +33,6 @@ namespace StockTlgBot
             container.Bind<InputDataParser>().To<InputDataParser>();
             container.Bind<StockManager>().To<StockManager>();
             container.Bind<SchedulerManager>().To<SchedulerManager>();
-            container.Bind<Scheduler>().To<Scheduler>();
             container.Bind<BotLogic>().To<BotLogic>();
 
             botClient = new TelegramBotClient(settings.TelegramBotToken);
@@ -44,9 +43,13 @@ namespace StockTlgBot
                 container.Get<IOutputRender>());
             
             AddAllEventHandlers();
-
+            
+            container.Bind<Scheduler>().To<Scheduler>();
+            
             telegramHandler.Initialize();
-            container.Get<Scheduler>().Run();
+            
+            container.Get<Scheduler>().Run(1);
+            
             Console.WriteLine("Press key to shutdown bot");
             Console.ReadKey();
             telegramHandler.StopReciving();
@@ -61,9 +64,8 @@ namespace StockTlgBot
         
         private static void AddAllEventHandlers()
         {
-            var botLogic = container.Get<BotLogic>();
-            telegramHandler.OnMessage += botLogic.ExecuteUserRequest;
-            botLogic.OnReply += telegramHandler.BotOnReply;
+            container.Get<BotLogic>().OnReply += telegramHandler.BotOnReply;;
+            telegramHandler.OnMessage += container.Get<BotLogic>().ExecuteUserRequest;
         }
 
         private class Settings

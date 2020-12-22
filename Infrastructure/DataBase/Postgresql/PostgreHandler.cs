@@ -13,7 +13,7 @@ namespace Infrastructure.DataBase
 
         public async Task<UserRecord> FindUser(long id)
         {
-            return dbContext.UserRecords.FindAsync(id).Result;
+            return await dbContext.UserRecords.FindAsync(id);
         }
 
         public async Task<UserRecord> AddNewUser(UserRecord userRecord)

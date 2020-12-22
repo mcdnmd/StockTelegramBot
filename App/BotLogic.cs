@@ -39,6 +39,9 @@ namespace App
                 case UserRequestType.Start:
                     reply = new BotReply(request.User, BotReplyType.Help, null);
                     break;
+                case UserRequestType.Help:
+                    reply = new BotReply(request.User, BotReplyType.Help, null);
+                    break;
                 case UserRequestType.Register:
                     reply = userRegister.Register(request.User);
                     break;

@@ -15,10 +15,12 @@ namespace App
             this.botLogic = botLogic;
         }
 
-        public void Run()
+        public void Run(int updateIntervalInMinutes)
         {
             timer.Elapsed += OnElapsed;
+            timer.Interval = 0.2 * 60 * 1000;
             timer.Enabled = true;
+            
         }
         
         private void OnElapsed(object sender, EventArgs e)

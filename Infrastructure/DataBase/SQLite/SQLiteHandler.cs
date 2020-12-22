@@ -15,6 +15,8 @@ namespace Infrastructure.DataBase
             var result = _context.SendSQL($"SELECT Id, ChatStatus, Subscriptions, ParserName, " +
                                           $"ParserToken FROM Users WHERE Id={id};");
             var dbDataRecords = await result;
+            if (ReferenceEquals(dbDataRecords, null))
+                return null;
             return await DataToUser(dbDataRecords.First());
         }
 
@@ -27,6 +29,8 @@ namespace Infrastructure.DataBase
                                           $"ParserToken) VALUES ({userRecord.Id}, {(int) userRecord.ChatStatus}, " +
                                           $"'{subscriptions}', {(int) userRecord.ParserName}, '{userRecord.ParserToken}');");
             var dbDataRecords = await result;
+            if (ReferenceEquals(dbDataRecords, null))
+                return null;
             return await DataToUser(dbDataRecords.First());
         }
 
@@ -39,6 +43,8 @@ namespace Infrastructure.DataBase
                                           $"Subscriptions = '{subscriptions}', ParserName = {(int) userRecord.ParserName}," +
                                           $"ParserToken = '{userRecord.ParserToken}' WHERE Id = {userRecord.Id}");
             var dbDataRecords = await result;
+            if (ReferenceEquals(dbDataRecords, null))
+                return null;
             return await DataToUser(dbDataRecords.First());
         }
 
@@ -47,6 +53,8 @@ namespace Infrastructure.DataBase
             var result = _context.SendSQL($"DELETE FROM Users WHERE Id = {userRecord.Id}");
 
             var dbDataRecords = await result;
+            if (ReferenceEquals(dbDataRecords, null))
+                return null;
             return await DataToUser(dbDataRecords.First());
         }
 
@@ -57,8 +65,6 @@ namespace Infrastructure.DataBase
 
         private static async Task<UserRecord> DataToUser(DbDataRecord values)
         {
-            if (ReferenceEquals(values, null)) 
-                return null;
             var result = new UserRecord()
             {
                 Id = (long)values[0], ChatStatus = Enum.Parse<ChatStatus>(values[1].ToString()),

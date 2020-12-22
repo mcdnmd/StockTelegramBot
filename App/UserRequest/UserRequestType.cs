@@ -10,6 +10,7 @@ namespace App
         SubscribeForSymbol,
         UnSubscribeForSymbol,
         InputRawData,
-        GetAllSymbolPrices
+        GetAllSymbolPrices,
+        Help
     }
 }
