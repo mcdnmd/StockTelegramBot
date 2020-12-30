@@ -61,6 +61,9 @@ namespace View.Telegram
                 case BotReplyType.EmptySymbolSubscriptions:
                     text = "You don`t have any symbols in the library. Use /addsymbol";
                     break;
+                case BotReplyType.NoSuchSymbolSubscription:
+                    text = "You don`t have this symbol in the library";
+                    break;
                 default:
                     throw new NotImplementedException();
             }

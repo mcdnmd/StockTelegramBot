@@ -18,5 +18,6 @@ namespace App
         SuccessfullyRemoveSymbol,
         SuccessfullyAddSymbol,
         SuccessfullyEnterToken,
+        NoSuchSymbolSubscription
     }
 }

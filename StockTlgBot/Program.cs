@@ -50,7 +50,7 @@ namespace StockTlgBot
 
             telegramHandler.Initialize();
             
-            container.Get<Scheduler>().Run(1);
+            container.Get<Scheduler>().Run(10);
             
             Console.WriteLine("Press key to shutdown bot");
             Console.ReadKey();

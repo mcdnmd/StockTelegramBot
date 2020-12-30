@@ -6,6 +6,7 @@ namespace Infrastructure.DataBase
         ChoseParser,
         EnterParserPublicToken,
         EnterSymbolToAddNewSubscription,
-        EnterSymbolToRemoveSubscription
+        EnterSymbolToRemoveSubscription,
+        EnterUpdatePeriod
     }
 }

@@ -2,7 +2,10 @@ namespace App
 {
     public enum SchedulerCommandType
     {
-        SendActualPricesForUser,
-        DailyDeleteAllUsers,
+        DailyPricesUpdate,
+        Every12HoursPricesUpdate,
+        HourlyPricesUpdate,
+        EveryHalfAnHourPricesUpdate,
+        Every10MinutesPricesUpdate,
     }
 }

@@ -73,11 +73,7 @@ namespace App
 
         private IEnumerable<BotReply> GetBotRepliesOnSchedulerCommand(SchedulerCommand schedulerCommand)
         {
-            var result = schedulerCommand.CommandType switch
-            {
-                SchedulerCommandType.SendActualPricesForUser => schedulerManager.GetBotReplyTypes(stockManager),
-                _ => throw new NotImplementedException()
-            };
+            var result = schedulerManager.GetBotReply(schedulerCommand.CommandType);
             return result;
         }
     }

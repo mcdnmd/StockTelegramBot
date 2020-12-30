@@ -13,7 +13,7 @@ namespace Infrastructure.DataBase
         public async Task<UserRecord> FindUser(long id)
         {
             var result = _context.SendSQL($"SELECT Id, ChatStatus, Subscriptions, ParserName, " +
-                                          $"ParserToken FROM Users WHERE Id={id};");
+                                          $"ParserToken, UpdatePeriod FROM Users WHERE Id={id};");
             var dbDataRecords = await result;
             if (ReferenceEquals(dbDataRecords, null))
                 return null;
@@ -26,8 +26,8 @@ namespace Infrastructure.DataBase
             if (subscriptions.Length > 0 && subscriptions[0] == ';')
                 subscriptions = subscriptions.Substring(1);
             var result = _context.SendSQL("INSERT INTO Users (Id, ChatStatus, Subscriptions, ParserName, " +
-                                          $"ParserToken) VALUES ({userRecord.Id}, {(int) userRecord.ChatStatus}, " +
-                                          $"'{subscriptions}', {(int) userRecord.ParserName}, '{userRecord.ParserToken}');");
+                                          $"ParserToken, UpdatePeriod) VALUES ({userRecord.Id}, {(int) userRecord.ChatStatus}, " +
+                                          $"'{subscriptions}', {(int) userRecord.ParserName}, '{userRecord.ParserToken}', '{(int) userRecord.UpdatePeriod}');");
             var dbDataRecords = await result;
             if (ReferenceEquals(dbDataRecords, null))
                 return null;
@@ -41,7 +41,7 @@ namespace Infrastructure.DataBase
                 subscriptions = subscriptions.Substring(1);
             var result = _context.SendSQL($"UPDATE Users SET ChatStatus = {(int) userRecord.ChatStatus}, " +
                                           $"Subscriptions = '{subscriptions}', ParserName = {(int) userRecord.ParserName}," +
-                                          $"ParserToken = '{userRecord.ParserToken}' WHERE Id = {userRecord.Id}");
+                                          $"ParserToken = '{userRecord.ParserToken}', UpdatePeriod = '{(int) userRecord.UpdatePeriod}' WHERE Id = {userRecord.Id}");
             var dbDataRecords = await result;
             if (ReferenceEquals(dbDataRecords, null))
                 return null;
@@ -70,7 +70,8 @@ namespace Infrastructure.DataBase
                 Id = (long)values[0], ChatStatus = Enum.Parse<ChatStatus>(values[1].ToString()),
                 Subscriptions = values[2].ToString().Split(';').ToList(), 
                 ParserName = Enum.Parse<ParserName>(values[3].ToString()),
-                ParserToken = values[4].ToString()
+                ParserToken = values[4].ToString(),
+                UpdatePeriod =  Enum.Parse<UpdatePeriod>(values[5].ToString())
             };
             return result;
         }

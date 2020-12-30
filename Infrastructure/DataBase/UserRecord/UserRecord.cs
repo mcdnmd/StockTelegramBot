@@ -9,5 +9,7 @@ namespace Infrastructure.DataBase
         public List<string> Subscriptions { get; set; }
         public ParserName ParserName { get; set; }
         public string ParserToken { get; set; }
+        
+        public UpdatePeriod UpdatePeriod { get; set; }
     }
 }

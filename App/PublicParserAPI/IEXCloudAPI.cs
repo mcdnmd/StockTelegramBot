@@ -22,7 +22,10 @@ namespace App
                 return null;
             var http = JsonConvert.DeserializeObject<Dictionary<string, string>>(httpResponse);
 
-            var currentPrice = http["iexRealtimePrice"] ?? http["latestPrice"];
+            var currentPrice = http["iexRealtimePrice"];
+            
+            if (ReferenceEquals(currentPrice, null) || currentPrice == "0")
+                currentPrice = http["latestPrice"];
             var result = new ParserReply
             {
                 Symbol = symbol, 

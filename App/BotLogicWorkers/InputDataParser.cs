@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using App.Logger;
 using Infrastructure;
 using Infrastructure.DataBase;
@@ -62,6 +63,19 @@ namespace App
 
         private BotReplyType EnterSymbolToRemove(UserRecord userRecord, List<string> symbols)
         {
+            if (userRecord.Subscriptions.Count == 0)
+            {
+                userRecord.ChatStatus = ChatStatus.None;
+                database.UpdateUser(userRecord);
+                return BotReplyType.EmptySymbolSubscriptions;
+            }
+
+            if (symbols.Where(symbol => userRecord.Subscriptions.Contains(symbol)).ToList().Count == 0)
+            {
+                userRecord.ChatStatus = ChatStatus.None;
+                database.UpdateUser(userRecord);
+                return BotReplyType.NoSuchSymbolSubscription;
+            }
             foreach (var symbol in symbols)
                 userRecord.Subscriptions.Remove(symbol);
             userRecord.ChatStatus = ChatStatus.None;
